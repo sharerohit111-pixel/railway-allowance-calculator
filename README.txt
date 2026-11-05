@@ -1,22 +1,20 @@
-ALLOWANCE CALCULATOR FOR RAILWAY EMPLOYEES
-Owner & Founder: Rohit Kumar
+Railway Allowance Calculator v2.0.0
 
 Files:
-- index.html: app interface and Night Duty Allowance calculator
-- manifest.webmanifest: installable PWA metadata
-- sw.js: offline cache
-- icon.svg, icon-192.png, icon-512.png: app icons
+- index.html: app UI and NDA/OTA calculation logic
+- manifest.webmanifest: installable PWA manifest
+- sw.js: offline caching service worker
+- icon.svg: app icon
 
-INSTALL ON ANDROID:
-1. Upload all files in this folder to a GitHub repository (repository root).
-2. In GitHub: Settings > Pages > Deploy from a branch > main > /(root) > Save.
-3. Wait until GitHub Pages provides an HTTPS website address.
-4. Open that HTTPS address in Chrome on Android.
-5. Chrome menu (three dots) > Install app / Add to Home screen.
+Deploy:
+1. Back up your existing GitHub repository first.
+2. Replace the repository's index.html, manifest.webmanifest, sw.js, and icon.svg with these files.
+3. Commit changes to main branch. GitHub Pages should redeploy automatically.
+4. Open the existing Pages URL. If old UI remains, refresh or clear site data/cache.
 
-IMPORTANT:
-- This is an installable Progressive Web App (PWA), not a signed APK.
-- PWA installation requires hosting over HTTPS (GitHub Pages is suitable).
-- Login buttons are visual placeholders only; real mobile OTP, email and Google authentication need a secure authentication backend.
-- Calculator formula implemented: ((Basic Pay + DA) / 200) / 6 per hour; formula is not displayed in the app.
-- The calculator uses the formula supplied for this prototype. Confirm current Railway eligibility/rules before relying on it for claims.
+Important:
+- NDA calculation retained from the existing app: hourly = (Basic Pay + DA Amount) / 1200.
+- OTA logic follows the supplied OTA code and configured post defaults/thresholds.
+- Ad areas are placeholders only. No ad network is active; AdSense approval and publisher code are required.
+- Premium/payment, login, cloud history and PDF export are not active yet.
+- This is an independent utility, not an official Indian Railways app. Verify all applicable rules before using calculations for claims.

@@ -1,25 +1,17 @@
 {
-  "name": "Allowance Calculator for Railway Employees",
+  "name": "Railway Allowance Calculator",
   "short_name": "Railway Allowance",
-  "description": "Night Duty Allowance calculator for railway employees",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0000FF",
-  "theme_color": "#0000FF",
+  "background_color": "#061a42",
+  "theme_color": "#061a42",
+  "description": "NDA and OTA calculators for railway employees",
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
