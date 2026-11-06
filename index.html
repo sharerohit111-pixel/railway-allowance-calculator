@@ -97,6 +97,61 @@ main{padding:14px 13px 0}.section-card{border-radius:23px;overflow:hidden;margin
   </div><p class="status" id="otaStatus">सभी विवरण भरकर गणना करें।</p></div>
   <div class="ad-slot">Advertisement space — ads will appear here only after approval and integration</div>
   <button class="secondary-btn backHome">← Home</button>
+      <section class="page" id="daArrearPage">
+  <h2 class="page-title">🧮 महंगाई भत्ता (DA) एरियर</h2>
+  <p class="sub">DA में प्रतिशत वृद्धि और एरियर महीनों के आधार पर गणना</p>
+
+  <div class="field">
+    <label for="arrBasic">Basic Pay (₹)</label>
+    <input id="arrBasic" type="number" min="1" step="1" value="25500">
+  </div>
+
+  <div class="field">
+    <label for="arrTpa">मासिक Transport Allowance / TPA (₹)</label>
+    <select id="arrTpa">
+      <option value="7200">₹7,200</option>
+      <option value="3600">₹3,600</option>
+      <option value="1800" selected>₹1,800</option>
+      <option value="1350">₹1,350</option>
+      <option value="900">₹900</option>
+      <option value="0">₹0</option>
+    </select>
+  </div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="arrHike">DA में वृद्धि (%)</label>
+      <input id="arrHike" type="number" min="0" step="0.01" value="3">
+    </div>
+    <div class="field">
+      <label for="arrMonths">एरियर के महीने</label>
+      <input id="arrMonths" type="number" min="1" step="1" value="4">
+    </div>
+  </div>
+
+  <button class="primary-btn" id="arrCalc">Calculate DA Arrear</button>
+
+  <div class="output" id="resultCardArrear" style="display:none">
+    <h3>एरियर गणना का परिणाम</h3>
+    <div class="output-grid">
+      <div class="metric"><small>Basic पर मासिक DA वृद्धि</small><b id="resArrBasicInc">₹0.00</b></div>
+      <div class="metric"><small>TPA पर मासिक DA वृद्धि</small><b id="resArrTpaInc">₹0.00</b></div>
+      <div class="metric"><small>कुल Gross Arrear</small><b id="resArrGross">₹0.00</b></div>
+      <div class="metric"><small>10% अनुमानित NPS कटौती</small><b id="resArrNps">-₹0.00</b></div>
+      <div class="metric" style="grid-column:1/-1">
+        <small>अनुमानित Net Payable</small>
+        <b id="resArrNet">₹0.00</b>
+      </div>
+    </div>
+    <p class="status">नोट: NPS कटौती 10% पर अनुमानित है। वास्तविक कटौती लागू रेलवे नियमों के अनुसार होगी।</p>
+    <div class="form-grid" style="margin-top:10px">
+      <button class="secondary-btn" id="saveDAArrear">💾 इतिहास में सेव करें</button>
+      <button class="secondary-btn" id="pdfDAArrear">📄 PDF डाउनलोड</button>
+    </div>
+  </div>
+
+  <button class="secondary-btn backHome">← Home</button>
+      </section>
  </section>
  <section class="page" id="historyPage"><h2 class="page-title">📊 Calculation History</h2><p class="sub">इस संस्करण में इतिहास को सर्वर पर सुरक्षित करने की सुविधा अभी जोड़ी नहीं गई है।</p><p>गणना इतिहास और सिंक सुविधा अगले संस्करण में सुरक्षित स्थानीय/क्लाउड स्टोरेज के साथ जोड़ी जाएगी।</p><button class="secondary-btn backHome">← Home</button></section>
  <section class="page" id="morePage"><h2 class="page-title">🧰 अन्य रेलवे भत्ते</h2><p class="sub">अगले चरण में अन्य भत्ता कैलकुलेटर जोड़े जा सकते हैं।</p><p>अभी उपलब्ध: NDA और OTA।</p><button class="secondary-btn backHome">← Home</button></section>
