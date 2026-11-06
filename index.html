@@ -189,6 +189,42 @@ function calcNDA(){
  if(!valid){$("ndaPerHour").textContent="—";$("ndaTotal").textContent="—";$("ndaStatus").textContent="कृपया सही मान भरें। घंटे 0 से अधिक और 24 से अधिक नहीं होने चाहिए।";$("ndaStatus").className="status error";return}
  const hourly=(b+d)/1200;$("ndaPerHour").textContent=money(hourly);$("ndaTotal").textContent=money(hourly*h);$("ndaStatus").textContent="Calculation updated successfully.";$("ndaStatus").className="status";
 }
+     function calcDAArrear(){
+  const basic=Number($("arrBasic").value);
+  const tpa=Number($("arrTpa").value);
+  const hike=Number($("arrHike").value);
+  const months=Number($("arrMonths").value);
+
+  const valid=basic>0 && tpa>=0 && hike>=0 && months>0 &&
+    Number.isFinite(basic) && Number.isFinite(tpa) &&
+    Number.isFinite(hike) && Number.isFinite(months);
+
+  if(!valid){
+    alert("कृपया सभी जानकारी सही भरें।");
+    return;
+  }
+
+  const basicInc=basic*hike/100;
+  const tpaInc=tpa*hike/100;
+  const gross=(basicInc+tpaInc)*months;
+  const nps=gross*0.10;
+  const net=gross-nps;
+
+  $("resArrBasicInc").textContent=money(basicInc);
+  $("resArrTpaInc").textContent=money(tpaInc);
+  $("resArrGross").textContent=money(gross);
+  $("resArrNps").textContent="-"+money(nps);
+  $("resArrNet").textContent=money(net);
+
+  $("resultCardArrear").style.display="block";
+}
+
+$("arrCalc").addEventListener("click",calcDAArrear);
+["arrBasic","arrTpa","arrHike","arrMonths"].forEach(id=>{
+  $(id).addEventListener("input",()=>{
+    $("resultCardArrear").style.display="none";
+  });
+});
 ["ndaBasic","ndaDa","ndaHours"].forEach(id=>$(id).addEventListener("input",calcNDA));$("ndaCalc").addEventListener("click",calcNDA);
 const posts={sm:{basic:35400,tpa:3600,category:"continuous",running:false},lp:{basic:35400,tpa:3600,category:"running",running:true},pm:{basic:19900,tpa:1800,category:"continuous",running:false},tm:{basic:29200,tpa:3600,category:"running",running:true},ws:{basic:25500,tpa:3600,category:"workshop",running:false},tmv:{basic:18000,tpa:1800,category:"continuous",running:false}};
 let otaCategory="continuous",otaRunning=false;
