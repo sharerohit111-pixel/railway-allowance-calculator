@@ -1,4 +1,4 @@
-const CACHE = "railway-allowance-v3";
+const CACHE = "railway-allowance-v4";
 
 const ASSETS = [
   "./",
