@@ -466,8 +466,8 @@ function calculateNDA() {
 
  // NDA प्रति घंटा दर = (Basic + DA) / 200
  // घंटे की अधिकतम सीमा 24 नहीं रखी गई है।
- const hourly = (basic + da) / 200;
- const total = hourly * hours * (7 / 6);
+ const hourly = (basic + da) / 1200;
+ const total = hourly * hours;
 
  $("ndaPerHour").textContent = money(hourly);
  $("ndaTotal").textContent = money(total);
