@@ -164,10 +164,6 @@ main{padding:14px 13px 0}
   <label for="ndaHours">Night Duty Hours (घंटे)</label>
   <input id="ndaHours" type="number" min="0" step="0.01" value="8">
  </div>
- <label class="checkbox-container" style="display:block;margin:8px 0 12px;font-size:13px;font-weight:800">
-  <input type="checkbox" id="ndaRunning">
-  Running Staff (Loco Pilot / Guard) — 30% Pay Element
- </label>
 
  <button class="primary-btn" id="ndaCalc">Calculate NDA</button>
  <div class="output">
@@ -183,22 +179,57 @@ main{padding:14px 13px 0}
 </section>
 
 <!-- OTA CALCULATOR -->
-   </div>
+<section class="page" id="otaPage">
+ <h2 class="page-title">⏱️ Overtime Allowance (OTA)</h2>
+ <p class="sub">14 दिनों के कुल ड्यूटी घंटों के आधार पर ओवरटाइम</p>
+
+ <div class="field">
+  <label for="otaPost">पद चुनें (Quick Select)</label>
+  <select id="otaPost">
+   <option value="">Select Post</option>
+   <option value="sm">🚉 SM</option>
+   <option value="lp">🚂 Loco Pilot</option>
+   <option value="pm">🚩 Pointsman</option>
+   <option value="tm">💼 Guard / TM</option>
+   <option value="ws">🛠 Workshop</option>
+   <option value="tmv">⚒ Trackman</option>
+  </select>
  </div>
 
- <button class="primary-btn" id="otaCalc">Calculate Overtime</button>
- <div class="output">
-  <h3>गणना का परिणाम</h3>
-  <div class="output-grid">
-   <div class="metric"><small>Hourly Rate</small><b id="otaRate">—</b></div>
-   <div class="metric"><small>1.5x दर वाले घंटे</small><b id="ota15">—</b></div>
-   <div class="metric"><small>2.0x दर वाले घंटे</small><b id="ota20">—</b></div>
-   <div class="metric"><small>Total OTA Payable</small><b id="otaTotal">—</b></div>
+ <div class="form-grid">
+  <div class="field">
+   <label for="otaBasic">Basic Pay (₹)</label>
+   <input id="otaBasic" type="number" min="0" step="0.01" placeholder="Basic Pay">
   </div>
-  <p class="status" id="otaStatus">अपनी जानकारी भरकर गणना करें</p>
+  <div class="field">
+   <label for="otaTpa">Transport Allowance / TPA (₹)</label>
+   <input id="otaTpa" type="number" min="0" step="0.01" placeholder="TPA">
+  </div>
  </div>
- <div class="ad-slot">Advertisement space</div>
- <button class="secondary-btn backHome">← Home</button>
+   <div class="form-grid">
+   <div class="field">
+    <label for="otaDa">Dearness Allowance (DA) %</label>
+    <input id="otaDa" type="number" min="0" step="0.01" value="53">
+   </div>
+   <div class="field">
+    <label for="otaHours">14 दिनों के कुल ड्यूटी घंटे</label>
+    <input id="otaHours" type="number" min="0" step="0.01" placeholder="उदा. 112">
+   </div>
+  </div>
+
+  <button class="primary-btn" id="otaCalc">Calculate Overtime</button>
+  <div class="output">
+   <h3>गणना का परिणाम</h3>
+   <div class="output-grid">
+    <div class="metric"><small>Hourly Rate</small><b id="otaRate">—</b></div>
+    <div class="metric"><small>1.5x दर वाले घंटे</small><b id="ota15">—</b></div>
+    <div class="metric"><small>2.0x दर वाले घंटे</small><b id="ota20">—</b></div>
+    <div class="metric"><small>Total OTA Payable</small><b id="otaTotal">—</b></div>
+   </div>
+   <p class="status" id="otaStatus">अपनी जानकारी भरकर गणना करें</p>
+  </div>
+  <div class="ad-slot">Advertisement space</div>
+  <button class="secondary-btn backHome">← Home</button>
 </section>
 
 <!-- DA ARREAR CALCULATOR -->
@@ -260,17 +291,14 @@ main{padding:14px 13px 0}
  <p class="sub">किलोमीटर, शंटिंग और घाट सेक्शन के आधार पर गणना</p>
 
  <div class="field">
-  <label for="kmaRateSelect">पद चुनें (प्रति 100 किलोमीटर दर)</label>
+  <label for="kmaRateSelect">प्रति 100 किलोमीटर दर (₹)</label>
   <select id="kmaRateSelect">
-   <option value="0">पद चुनें</option>
-   <option value="606">Loco Pilot (Mail / Express) — ₹606</option>
-   <option value="600">Loco Pilot (Passenger) / Sr. Motorman — ₹600</option>
-   <option value="594">Loco Pilot (Goods) / Motorman — ₹594</option>
-   <option value="447">Sr. Assistant Loco Pilot (Sr. ALP) — ₹447</option>
-   <option value="430">Assistant Loco Pilot (ALP) — ₹430</option>
-   <option value="541">Train Manager / Guard (Mail / Express) — ₹541</option>
-   <option value="535">Train Manager / Guard (Passenger) — ₹535</option>
-   <option value="525">Train Manager / Guard (Goods) — ₹525</option>
+   <option value="0">दर चुनें</option>
+   <option value="100">₹100</option>
+   <option value="150">₹150</option>
+   <option value="200">₹200</option>
+   <option value="250">₹250</option>
+   <option value="300">₹300</option>
   </select>
  </div>
  <div class="field">
@@ -342,8 +370,8 @@ main{padding:14px 13px 0}
   <button id="aboutBtn">About App</button>
   <button id="privacyBtn">Privacy & Disclaimer</button>
  </aside>
-                               </div>
-                               <script>
+ </div>
+ <script>
 "use strict";
 
 // ======================================
@@ -362,7 +390,8 @@ let calculatedData = {
  summary: "",
  resultText: ""
 };
-                                function saveCalculationData(type, summary, resultText) {
+
+function saveCalculationData(type, summary, resultText) {
  calculatedData = {
   type,
   summary: Number(summary).toFixed(2),
@@ -415,44 +444,42 @@ $("drawer").addEventListener("click", event => {
 // ======================================
 
 function calculateNDA() {
-  const basic = Number($("ndaBasic").value);
-  const da = Number($("ndaDa").value);
-  const hours = Number($("ndaHours").value);
-  const isRunning = $("ndaRunning").checked;
+ const basic = Number($("ndaBasic").value);
+ const da = Number($("ndaDa").value);
+ const hours = Number($("ndaHours").value);
 
-  const valid =
-    Number.isFinite(basic) &&
-    Number.isFinite(da) &&
-    Number.isFinite(hours) &&
-    basic > 0 &&
-    da >= 0 &&
-    hours >= 0;
+ const valid =
+  Number.isFinite(basic) &&
+  Number.isFinite(da) &&
+  Number.isFinite(hours) &&
+  basic > 0 &&
+  da >= 0 &&
+  hours >= 0;
 
-  if (!valid) {
-    $("ndaStatus").textContent = "कृपया सही जानकारी भरें।";
-    $("ndaStatus").className = "status error";
-    $("ndaPerHour").textContent = "—";
-    $("ndaTotal").textContent = "—";
-    return;
-  }
+ if (!valid) {
+  $("ndaStatus").textContent = "कृपया सही जानकारी भरें।";
+  $("ndaStatus").className = "status error";
+  $("ndaPerHour").textContent = "—";
+  $("ndaTotal").textContent = "—";
+  return;
+ }
 
-  // Running staff के लिए Basic Pay में 30% Pay Element
-  const calculatedBasic = isRunning ? basic * 1.30 : basic;
-  const hourly = (calculatedBasic + da) / 200;
-  const total = hourly * hours;
+ // NDA प्रति घंटा दर = (Basic + DA) / 200
+ // घंटे की अधिकतम सीमा 24 नहीं रखी गई है।
+ const hourly = (basic + da) / 1200;
+ const total = hourly * hours;
 
-  $("ndaPerHour").textContent = money(hourly);
-  $("ndaTotal").textContent = money(total);
-  $("ndaStatus").textContent = isRunning
-    ? "Running Staff के 30% Pay Element सहित अनुमानित गणना।"
-    : "गणना सफलतापूर्वक पूरी हुई।";
-  $("ndaStatus").className = "status";
+ $("ndaPerHour").textContent = money(hourly);
+ $("ndaTotal").textContent = money(total);
 
-  saveCalculationData(
-    "NDA",
-    total,
-    `Basic Pay: ₹${basic}, गणना हेतु Basic: ₹${calculatedBasic.toFixed(2)}, DA Amount: ₹${da}, Night Duty Hours: ${hours}, Running Staff: ${isRunning ? "Yes" : "No"}, NDA per Hour: ₹${hourly.toFixed(2)}, Total NDA: ₹${total.toFixed(2)}`
-  );
+ $("ndaStatus").textContent = "गणना सफलतापूर्वक पूरी हुई।";
+ $("ndaStatus").className = "status";
+
+ saveCalculationData(
+  "NDA",
+  total,
+  `Basic Pay: ₹${basic}, DA Amount: ₹${da}, Night Duty Hours: ${hours}, Total NDA: ₹${total.toFixed(2)}`
+ );
 }
 
 $("ndaCalc").addEventListener("click", calculateNDA);
@@ -485,76 +512,72 @@ $("otaPost").addEventListener("change", event => {
 });
 
 function calculateOTA() {
-  const basic = Number($("otaBasic").value);
-  const tpa = Number($("otaTpa").value);
-  const da = Number($("otaDa").value);
-  const hours = Number($("otaHours").value);
+ const basic = Number($("otaBasic").value);
+ const tpa = Number($("otaTpa").value);
+ const da = Number($("otaDa").value);
+ const hours = Number($("otaHours").value);
 
-  const valid =
-    Number.isFinite(basic) &&
-    Number.isFinite(tpa) &&
-    Number.isFinite(da) &&
-    Number.isFinite(hours) &&
-    basic > 0 && tpa >= 0 && da >= 0 &&
-    hours >= 0 && hours <= 336;
+ const valid =
+  Number.isFinite(basic) &&
+  Number.isFinite(tpa) &&
+  Number.isFinite(da) &&
+  Number.isFinite(hours) &&
+  basic > 0 && tpa >= 0 && da >= 0 &&
+  hours >= 0 && hours <= 336;
 
-  if (!valid) {
-    $("otaRate").textContent = "—";
-    $("ota15").textContent = "—";
-    $("ota20").textContent = "—";
-    $("otaTotal").textContent = "—";
-    $("otaStatus").textContent = "कृपया सही जानकारी भरें।";
-    $("otaStatus").className = "status error";
-    return;
-  }
+ if (!valid) {
+  $("otaRate").textContent = "—";
+  $("ota15").textContent = "—";
+  $("ota20").textContent = "—";
+  $("otaTotal").textContent = "—";
+  $("otaStatus").textContent = "कृपया सही जानकारी भरें।";
+  $("otaStatus").className = "status error";
+  return;
+ }
 
-  const isWorkshop = otaCategory === "workshop";
-  const isRunning = otaRunning;
-  const calculatedBasic = isRunning ? basic * 1.30 : basic;
-  const totalEmoluments =
-    calculatedBasic + tpa +
-    ((calculatedBasic + tpa) * da / 100);
+ const daFactor = 1 + da / 100;
+ const calculatedBasic = otaRunning ? basic * 1.3 : basic;
+ const totalGrossPay = (calculatedBasic * daFactor) + (tpa * daFactor);
+ const hourlyRate = totalGrossPay / 104;
 
-  let hourlyRate;
-  let threshold;
-  let firstSlabLimit;
+ let hours15 = 0;
+ let hours20 = 0;
 
-  if (isWorkshop) {
-    hourlyRate = totalEmoluments / 200;
-    threshold = 96;
-    firstSlabLimit = 108;
-  } else if (isRunning) {
-    hourlyRate = (totalEmoluments * 14) / (30 * 104);
-    threshold = 104;
-    firstSlabLimit = 108;
+ if (otaCategory === "workshop") {
+  if (hours > 96) hours20 = hours - 96;
+ } else {
+  const extraHours = Math.max(0, hours - 96);
+
+  if (extraHours <= 12) {
+   hours15 = extraHours;
   } else {
-    hourlyRate = (totalEmoluments * 14) / (30 * 96);
-    threshold = 96;
-    firstSlabLimit = 108;
+   hours15 = 12;
+   hours20 = extraHours - 12;
   }
+ }
 
-  const hours15 = Math.max(0, Math.min(hours, firstSlabLimit) - threshold);
-  const hours20 = Math.max(0, hours - firstSlabLimit);
-  const totalOta = (hours15 * hourlyRate * 1.5) + (hours20 * hourlyRate * 2);
+ const totalOta =
+  (hours15 * hourlyRate * 1.5) +
+  (hours20 * hourlyRate * 2);
 
-  $("otaRate").textContent = money(hourlyRate);
-  $("ota15").textContent = hours15.toFixed(2) + " घंटे";
-  $("ota20").textContent = hours20.toFixed(2) + " घंटे";
-  $("otaTotal").textContent = money(totalOta);
-  $("otaStatus").textContent =
-    "गणना पूरी हुई। अंतिम भुगतान लागू HOER/रेलवे आदेशों के अनुसार जाँचें।";
-  $("otaStatus").className = "status";
+ $("otaRate").textContent = money(hourlyRate);
+ $("ota15").textContent = hours15.toFixed(1) + " घंटे";
+ $("ota20").textContent = hours20.toFixed(1) + " घंटे";
+ $("otaTotal").textContent = money(totalOta);
 
-  saveCalculationData(
-    "OTA",
-    totalOta,
-    `Post: ${$("otaPost").selectedOptions[0].text}, Staff Type: ${isWorkshop ? "Workshop" : (isRunning ? "Running" : "Non-Running")}, Basic Pay: ₹${basic}, गणना हेतु Basic: ₹${calculatedBasic.toFixed(2)}, TPA: ₹${tpa}, DA: ${da}%, Total Emoluments: ₹${totalEmoluments.toFixed(2)}, कुल घंटे: ${hours}, 1.5x घंटे: ${hours15}, 2x घंटे: ${hours20}, Hourly Rate: ₹${hourlyRate.toFixed(2)}, Total OTA: ₹${totalOta.toFixed(2)}`
-  );
+ $("otaStatus").textContent =
+  "गणना पूरी हुई। अंतिम भुगतान लागू रेलवे नियमों और आदेशों के अनुसार जाँचें।";
+ $("otaStatus").className = "status";
+
+ saveCalculationData(
+  "OTA",
+  totalOta,
+  `Basic Pay: ₹${basic}, TPA: ₹${tpa}, DA: ${da}%, कुल घंटे: ${hours}, 1.5x घंटे: ${hours15}, 2x घंटे: ${hours20}, Total OTA: ₹${totalOta.toFixed(2)}`
+ );
 }
 
 $("otaCalc").addEventListener("click", calculateOTA);
-
-// ======================================
+  // ======================================
 // 3. DA ARREAR CALCULATION
 // इसमें History और PDF नहीं हैं।
 // ======================================
@@ -613,46 +636,51 @@ function updateKmaRateLabel() {
 $("kmaRateSelect").addEventListener("change", updateKmaRateLabel);
 
 function calculateKMA() {
-  const rate = Number($("kmaRateSelect").value);
-  const actualKm = Number($("kmaKmRun").value);
-  const shuntingHours = Number($("kmaShuntingHours").value);
-  const isGhat = $("kmaGhatSection").checked;
+ const rate = Number($("kmaRateSelect").value);
+ const actualKm = Number($("kmaKmRun").value);
+ const shuntingHours = Number($("kmaShuntingHours").value);
+ const isGhat = $("kmaGhatSection").checked;
 
-  const valid =
-    Number.isFinite(rate) &&
-    Number.isFinite(actualKm) &&
-    Number.isFinite(shuntingHours) &&
-    rate > 0 &&
-    actualKm >= 0 &&
-    shuntingHours >= 0;
+ const valid =
+  Number.isFinite(rate) &&
+  Number.isFinite(actualKm) &&
+  Number.isFinite(shuntingHours) &&
+  rate > 0 &&
+  actualKm >= 0 &&
+  shuntingHours >= 0;
 
-  if (!valid) {
-    $("kmaStatus").textContent = "कृपया पद, किलोमीटर और शंटिंग घंटे की सही जानकारी भरें।";
-    $("kmaStatus").className = "status error";
-    return;
-  }
+ if (!valid) {
+  $("kmaStatus").textContent = "कृपया दर और किलोमीटर की सही जानकारी भरें।";
+  $("kmaStatus").className = "status error";
+  return;
+ }
 
-  const shuntingKm = shuntingHours * 15;
-  const ghatBonusKm = isGhat ? actualKm * 0.50 : 0;
-  const effectiveKm = actualKm + ghatBonusKm + shuntingKm;
-  const totalKma = (effectiveKm / 100) * rate;
+ // 1 घंटा शंटिंग = 15 किलोमीटर
+ let effectiveKm = actualKm + (shuntingHours * 15);
 
-  $("kmaEffectiveKm").textContent = effectiveKm.toFixed(2) + " KM";
-  $("kmaSelectedRate").textContent = money(rate) + " / 100 KM";
-  $("kmaTotal").textContent = money(totalKma);
-  $("kmaStatus").textContent =
-    `Actual: ${actualKm.toFixed(2)} KM | Ghat Bonus: ${ghatBonusKm.toFixed(2)} KM | Shunting: ${shuntingKm.toFixed(2)} KM`;
-  $("kmaStatus").className = "status";
+ // घाट सेक्शन में 1.5 गुना दूरी
+ if (isGhat) {
+  effectiveKm *= 1.5;
+ }
 
-  saveCalculationData(
-    "KMA",
-    totalKma,
-    `पद: ${$("kmaRateSelect").selectedOptions[0].text}, Actual KM: ${actualKm}, Ghat Bonus KM: ${ghatBonusKm}, Shunting KM: ${shuntingKm}, Effective Distance: ${effectiveKm.toFixed(2)} KM, प्रति 100 KM दर: ₹${rate}, कुल KMA: ₹${totalKma.toFixed(2)}`
-  );
+ const totalKma = (effectiveKm / 100) * rate;
+
+ $("kmaEffectiveKm").textContent = effectiveKm.toFixed(2) + " KM";
+ $("kmaSelectedRate").textContent = money(rate);
+ $("kmaTotal").textContent = money(totalKma);
+
+ $("kmaStatus").textContent = "गणना सफलतापूर्वक पूरी हुई।";
+ $("kmaStatus").className = "status";
+
+ saveCalculationData(
+  "KMA",
+  totalKma,
+  `प्रभावी दूरी: ${effectiveKm.toFixed(2)} KM, प्रति 100 KM दर: ₹${rate}, कुल KMA: ₹${totalKma.toFixed(2)}`
+ );
 }
 
 $("kmaCalc").addEventListener("click", calculateKMA);
-                                // ======================================
+  // ======================================
 // 5. HISTORY
 // DA ARREAR को History में सेव नहीं किया जाएगा।
 // ======================================
@@ -801,7 +829,7 @@ async function shareApp() {
    await navigator.share(data);
   } catch (error) {}
  } else if (navigator.clipboard) {
-    try {
+  try {
    await navigator.clipboard.writeText(location.href);
    alert("ऐप का लिंक कॉपी हो गया।");
   } catch (error) {
@@ -828,6 +856,7 @@ document.querySelectorAll('[data-action="pdf"]').forEach(button => {
    alert("पहले NDA, OTA या KMA की गणना करें।");
    return;
   }
+
   generatePDF();
  });
 });
