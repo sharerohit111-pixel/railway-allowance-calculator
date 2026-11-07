@@ -1,915 +1,288 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#061a42">
-<meta name="description" content="Railway Allowance Calculator for Railway Employees - NDA and OTA">
-<link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>Railway Allowance Calculator</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-:root{--navy:#061a42;--navy2:#0b2e66;--blue:#087cf0;--cyan:#21d4fd;--purple:#7629d9;--gold:#ffc928;--ink:#101a32;--muted:#63718b;--paper:#f2f6ff;--line:#dbe5f5}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,Roboto,"Segoe UI",Arial,sans-serif;background:#eaf1ff;color:var(--ink)}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.app{max-width:820px;margin:auto;min-height:100vh;background:linear-gradient(180deg,#061a42 0,#0b2d65 330px,#eaf1ff 330px);padding-bottom:28px}
-.hero{color:white;padding:15px 15px 18px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 85% 65%,#1767a8 0,transparent 45%),linear-gradient(120deg,#06142f,#0b2c61 65%,#071b40)}
-.topline{display:flex;align-items:center;gap:10px}
-.menu{background:transparent;border:0;color:white;font-size:28px;width:36px}
-.brandicon{font-size:34px}
-.brand{flex:1;min-width:0}
-.brand h1{font-size:clamp(20px,5vw,31px);line-height:1.02;margin:0;font-weight:900;letter-spacing:-.6px}
-.brand h1 span{color:var(--gold)}
-.brand p{font-size:12px;font-weight:700;font-style:italic;margin:6px 0 0;color:#dceaff}
-.profile-pill{border:1px solid #ffd65a;border-radius:24px;padding:7px 10px;color:#fff;text-align:center;min-width:112px;background:#0a214b;box-shadow:0 0 12px #ffca2850}
-.profile-pill strong{display:block;font-size:15px}
-.profile-pill small{font-size:9px;color:#ffe28a;font-weight:800}
-.banner{margin-top:15px;min-height:122px;border-radius:20px;position:relative;overflow:hidden;display:flex;align-items:center;padding:13px 15px;background:linear-gradient(90deg,#09265a 0%,#164c83 52%,#fa9b48 100%);border:1px solid #5fa9ec}
-.banner:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,#071b3c 100%);opacity:.65}
-.emblem{z-index:1;font-size:48px;filter:drop-shadow(0 3px 5px #0008)}
-.banner-copy{z-index:1;margin-left:12px;max-width:62%}
-.banner-copy b{font-size:clamp(17px,4vw,23px);display:block}
-.banner-copy span{font-size:12px;color:#e7f2ff}
-.train-art{position:absolute;right:6px;bottom:8px;font-size:76px;filter:drop-shadow(0 5px 5px #0008)}
-.premium{position:absolute;right:12px;top:10px;z-index:2;border:1px solid #ffd75b;background:linear-gradient(100deg,#6a20bb,#190c55);color:#fff;border-radius:18px;padding:7px 12px;font-weight:800;font-size:12px;box-shadow:0 0 12px #d75bff80}
-.owner-credit{position:relative;z-index:2;margin:8px 0 0 12px;font-size:11px;color:#ffe38b;font-style:italic}
-main{padding:14px 13px 0}
-.section-card{border-radius:23px;overflow:hidden;margin:0 0 16px;box-shadow:0 8px 20px #102d6530;border:2px solid #fff}
-.segment{display:flex;align-items:center;gap:14px;padding:17px 14px;color:#fff;min-height:132px;position:relative}
-.segment.nda{background:linear-gradient(110deg,#06366c,#0755a0 65%,#061b46);border:2px solid #1acfff;box-shadow:inset 0 0 20px #21d4fd45}
-.segment.ota{background:linear-gradient(110deg,#29105d,#6418a5 65%,#21094a);border:2px solid #d35bff;box-shadow:inset 0 0 20px #e65cff45}
-.segment.da{background:linear-gradient(110deg,#064e67,#087e8b 65%,#063c60);border:2px solid #36d6d0;box-shadow:inset 0 0 20px #36d6d045}
-.seg-icon{width:76px;height:76px;flex:none;border-radius:20px;display:grid;place-items:center;font-size:43px;background:#ffffff18;border:2px solid #ffffff65}
-.segment.nda .seg-icon{box-shadow:0 0 12px #2bd7ff80}
-.segment.ota .seg-icon{box-shadow:0 0 12px #e45bff80}
-.segment.da .seg-icon{box-shadow:0 0 12px #36d6d080}
-.seg-copy{flex:1;min-width:0}
-.seg-copy h2{font-size:clamp(17px,4.5vw,23px);line-height:1.12;margin:0 0 5px}
-.seg-copy strong{display:block;color:#ffdb35;font-size:clamp(15px,3.8vw,20px);margin-bottom:6px}
-.seg-copy small{font-size:12px;color:#e8f2ff}
-.arrow{font-size:25px;border:0;background:#fff;color:#10234a;border-radius:50%;width:39px;height:39px;flex:none}
-.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:17px 0}
-.tool{background:#fff;border:1px solid #dce6fa;border-radius:17px;min-height:100px;padding:12px 5px;text-align:center;box-shadow:0 5px 12px #183b7620;color:#111c38;font-weight:800}
-.tool .ico{display:block;font-size:28px;margin-bottom:8px}
-.tool small{display:block;font-size:10px;color:#596781;font-weight:600}
-.ad-slot{margin:12px 0 16px;border:1px dashed #9aaaca;border-radius:14px;background:#f8faff;color:#6c7890;text-align:center;padding:12px;font-size:11px}
-.bottom{position:sticky;bottom:8px;margin:10px 12px 0;background:#061a42;border:1px solid #ffd35c;border-radius:22px;padding:9px 5px;display:grid;grid-template-columns:repeat(5,1fr);box-shadow:0 5px 16px #071b4260;z-index:3}
-.bottom button{border:0;background:transparent;color:#e8f1ff;font-size:11px;font-weight:700;padding:5px 2px}
-.bottom button span{display:block;font-size:20px;margin-bottom:3px}
-.page{display:none;background:#fff;border-radius:22px;padding:17px 14px;box-shadow:0 8px 22px #102d6520}
-.page.active{display:block}
-.page-title{font-size:22px;color:#09265a;margin:0 0 5px}
-.sub{color:#63718b;font-size:12px;margin:0 0 15px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field{margin-bottom:12px}
-.field label{display:block;font-size:13px;font-weight:800;margin-bottom:6px;color:#24324c}
-.field input,.field select{width:100%;padding:13px;border:1.5px solid #cbd6e8;border-radius:12px;background:#fff;color:#17233c;font-size:16px;min-width:0}
-.field input:focus,.field select:focus{outline:2px solid #8cc8ff;border-color:#1385ee}
-.primary-btn{width:100%;border:0;border-radius:13px;padding:14px;background:linear-gradient(90deg,#0868d8,#1245bb);color:white;font-weight:900;font-size:16px;margin-top:7px}
-.secondary-btn{border:1px solid #b8c8e4;border-radius:11px;background:#f6f8ff;color:#18305b;padding:11px 13px;font-weight:800}
-.output{margin-top:15px;padding:14px;background:#eef4ff;border-radius:16px}
-.output h3{margin:0 0 10px;color:#102e6d}
-.output-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.metric{background:white;border-radius:12px;padding:11px;text-align:center}
-.metric small{display:block;color:#66748d;font-size:11px;font-weight:700}
-.metric b{display:block;color:#071e62;font-size:19px;margin-top:5px;overflow-wrap:anywhere}
-.history-item{background:#f7f9ff;border:1px solid #dbe5f5;border-radius:12px;padding:11px;margin:8px 0}
-.history-item b{color:#102e6d}
-.history-item small{display:block;color:#68758c;margin-top:4px}
-.status{font-size:12px;color:#63718b;margin:10px 2px 0;min-height:15px}
-.error{color:#c62828!important}
-.drawer-back{display:none;position:fixed;inset:0;background:#0009;z-index:10}
-.drawer-back.open{display:block}
-.drawer{width:min(86vw,350px);height:100%;background:white;padding:18px;overflow:auto}
-.drawer h2{color:#08245a}
-.drawer button{width:100%;padding:13px;margin:5px 0;border:1px solid #dce5f5;border-radius:10px;background:#f5f8ff;text-align:left;font-weight:700;color:#162746}
-@media print{
- body{background:#fff!important}
- .app{max-width:none;background:#fff!important;padding:0}
- .hero,.bottom,.drawer-back,#homePage,.backHome,.ad-slot,#menuBtn{display:none!important}
- main{padding:0}
- .page{display:none!important}
- #historyPage{display:block!important;box-shadow:none;border:0}
- #historyPage .secondary-btn{display:none!important}
- .history-item{break-inside:avoid;border:1px solid #bbb!important}
-}
-@media(max-width:430px){
- .profile-pill{min-width:94px;padding:6px 7px}
- .profile-pill strong{font-size:13px}
- .brand h1{font-size:20px}
- .brand p{font-size:10px}
- .brandicon{font-size:29px}
- .banner{min-height:112px}
- .train-art{font-size:62px}
- .segment{gap:9px;padding:13px 10px;min-height:120px}
- .seg-icon{width:62px;height:62px;font-size:35px}
- .arrow{width:34px;height:34px}
- .tools{gap:6px}
- .tool{min-height:94px;font-size:11px}
- .form-grid{grid-template-columns:1fr}
- .bottom{margin-left:8px;margin-right:8px}
-}
-</style>
-</head>
-<body>
-<div class="app">
-<header class="hero">
- <div class="topline">
-  <button class="menu" id="menuBtn" aria-label="Menu">☰</button>
-  <div class="brandicon">🚆</div>
-  <div class="brand"><h1>Railway <span>Allowance Calculator</span></h1><p>For Railway Employees</p></div>
-  <div class="profile-pill"><strong>👤 Rohit</strong><small>FOUNDER & OWNER</small></div>
- </div>
- <div class="banner">
-  <div class="emblem">🇮🇳</div>
-  <div class="banner-copy"><b>Railway Staff Tools</b><span>भत्तों की गणना अब आसान</span><div class="owner-credit">Designed & managed by Rohit Kumar</div></div>
-  <div class="train-art">🚆</div>
-  <button class="premium" id="premiumBtn">👑 Premium</button>
- </div>
-</header>
-<main>
-<div id="homePage">
- <section class="section-card"><div class="segment nda"><div class="seg-icon">🌙</div><div class="seg-copy"><h2>Night Duty Allowance (NDA)</h2><strong>रात्रि ड्यूटी भत्ते की गणना</strong><small>◷ ड्यूटी घंटों के अनुसार NDA निकालें</small></div><button class="arrow" data-open="ndaPage">›</button></div></section>
- <section class="section-card"><div class="segment ota"><div class="seg-icon">⏱️💰</div><div class="seg-copy"><h2>Overtime Allowance (OTA)</h2><strong>ओवरटाइम भत्ते की गणना</strong><small>🚆 14 दिनों के कुल ड्यूटी घंटों के आधार पर</small></div><button class="arrow" data-open="otaPage">›</button></div></section>
- <section class="section-card"><div class="segment da"><div class="seg-icon">📈</div><div class="seg-copy"><h2>DA Arrear Calculator</h2><strong>महंगाई भत्ता एरियर की गणना</strong><small>Basic Pay, TPA और महीनों के आधार पर</small></div><button class="arrow" data-open="daArrearPage">›</button></div></section>
- <section class="section-card"><div class="segment ota"><div class="seg-icon">🚂</div><div class="seg-copy"><h2>Kilometer Allowance (KMA)</h2><strong>किलोमीटर भत्ते की गणना</strong><small>वास्तविक किलोमीटर, शंटिंग और घाट सेक्शन के आधार पर</small></div><button class="arrow" data-open="kmaPage">›</button></div></section>
- <div class="tools">
-  <button class="tool" data-open="historyPage"><span class="ico">📊</span>गणना इतिहास<small>History</small></button>
-  <button class="tool" data-action="pdf"><span class="ico">📄</span>PDF रिपोर्ट<small>Report</small></button>
-  <button class="tool" data-open="morePage"><span class="ico">🧰</span>अन्य भत्ते<small>More Tools</small></button>
-  <button class="tool" id="shareBtn"><span class="ico">🔗</span>ऐप शेयर करें<small>Share App</small></button>
-  <button class="tool" id="installAppBtn"><span class="ico">📲</span>Install App<small>मोबाइल में इंस्टॉल करें</small></button>
- </div>
- <div class="ad-slot" id="homeAd">Advertisement space — Ad network approval and publisher code required</div>
-       </div>
-       <!-- NDA CALCULATOR -->
-<section class="page" id="ndaPage">
- <h2 class="page-title">🌙 Night Duty Allowance (NDA)</h2>
- <p class="sub">अपनी वेतन और ड्यूटी की जानकारी भरें</p>
-
- <div class="field">
-  <label for="ndaBasic">Basic Pay (₹)</label>
-  <input id="ndaBasic" type="number" min="0" step="0.01" value="25500">
- </div>
- <div class="field">
-  <label for="ndaDa">DA Amount (₹)</label>
-  <input id="ndaDa" type="number" min="0" step="0.01" value="13600">
- </div>
- <div class="field">
-  <label for="ndaHours">Night Duty Hours (घंटे)</label>
-  <input id="ndaHours" type="number" min="0" step="0.01" value="8">
- </div>
-
- <button class="primary-btn" id="ndaCalc">Calculate NDA</button>
- <div class="output">
-  <h3>गणना का परिणाम</h3>
-  <div class="output-grid">
-   <div class="metric"><small>NDA per Hour</small><b id="ndaPerHour">—</b></div>
-   <div class="metric"><small>Total NDA</small><b id="ndaTotal">—</b></div>
-  </div>
-  <p class="status" id="ndaStatus">अनुमानित गणना</p>
- </div>
- <div class="ad-slot">Advertisement space</div>
- <button class="secondary-btn backHome">← Home</button>
-</section>
-
-<!-- OTA CALCULATOR -->
-<section class="page" id="otaPage">
- <h2 class="page-title">⏱️ Overtime Allowance (OTA)</h2>
- <p class="sub">14 दिनों के कुल ड्यूटी घंटों के आधार पर ओवरटाइम</p>
-
- <div class="field">
-  <label for="otaPost">पद चुनें (Quick Select)</label>
-  <select id="otaPost">
-   <option value="">Select Post</option>
-   <option value="sm">🚉 SM</option>
-   <option value="lp">🚂 Loco Pilot</option>
-   <option value="pm">🚩 Pointsman</option>
-   <option value="tm">💼 Guard / TM</option>
-   <option value="ws">🛠 Workshop</option>
-   <option value="tmv">⚒ Trackman</option>
-  </select>
- </div>
-
- <div class="form-grid">
-  <div class="field">
-   <label for="otaBasic">Basic Pay (₹)</label>
-   <input id="otaBasic" type="number" min="0" step="0.01" placeholder="Basic Pay">
-  </div>
-  <div class="field">
-   <label for="otaTpa">Transport Allowance / TPA (₹)</label>
-   <input id="otaTpa" type="number" min="0" step="0.01" placeholder="TPA">
-  </div>
- </div>
-   <div class="form-grid">
-   <div class="field">
-    <label for="otaDa">Dearness Allowance (DA) %</label>
-    <input id="otaDa" type="number" min="0" step="0.01" value="53">
-   </div>
-   <div class="field">
-    <label for="otaHours">14 दिनों के कुल ड्यूटी घंटे</label>
-    <input id="otaHours" type="number" min="0" step="0.01" placeholder="उदा. 112">
-   </div>
-  </div>
-
   <button class="primary-btn" id="otaCalc">Calculate Overtime</button>
-  <div class="output">
-   <h3>गणना का परिणाम</h3>
-   <div class="output-grid">
-    <div class="metric"><small>Hourly Rate</small><b id="otaRate">—</b></div>
-    <div class="metric"><small>1.5x दर वाले घंटे</small><b id="ota15">—</b></div>
-    <div class="metric"><small>2.0x दर वाले घंटे</small><b id="ota20">—</b></div>
-    <div class="metric"><small>Total OTA Payable</small><b id="otaTotal">—</b></div>
-   </div>
-   <p class="status" id="otaStatus">अपनी जानकारी भरकर गणना करें</p>
-  </div>
-  <div class="ad-slot">Advertisement space</div>
+  <div class="output"><h3>गणना का परिणाम</h3><div class="output-grid">
+   <div class="metric"><small>Hourly Rate</small><b id="otaRate">—</b></div>
+   <div class="metric"><small>1.5x दर वाले घंटे</small><b id="ota15">—</b></div>
+   <div class="metric"><small>2.0x दर वाले घंटे</small><b id="ota20">—</b></div>
+   <div class="metric"><small>Total OTA Payable</small><b id="otaTotal">—</b></div>
+  </div><p class="status" id="otaStatus">सभी विवरण भरकर गणना करें।</p><div class="form-grid" style="margin-top:10px"><button class="secondary-btn" id="saveOTA">💾 इतिहास में सेव करें</button><button class="secondary-btn" id="pdfOTA">📄 OTA PDF डाउनलोड</button></div></div>
+  <div class="ad-slot">Advertisement space — ads will appear here only after approval and integration</div>
   <button class="secondary-btn backHome">← Home</button>
-</section>
-
-<!-- DA ARREAR CALCULATOR -->
-<section class="page" id="daArrearPage">
- <h2 class="page-title">📈 महंगाई भत्ता (DA) एरियर</h2>
- <p class="sub">DA में प्रतिशत वृद्धि और एरियर महीनों के आधार पर गणना</p>
-
- <div class="field">
-  <label for="arrBasic">Basic Pay (₹)</label>
-  <input id="arrBasic" type="number" min="1" step="1" value="25500">
- </div>
-
- <div class="field">
-  <label for="arrTpa">मासिक Transport Allowance / TPA (₹)</label>
-  <select id="arrTpa">
-   <option value="7200">₹7,200</option>
-   <option value="3600">₹3,600</option>
-   <option value="1800" selected>₹1,800</option>
-   <option value="1350">₹1,350</option>
-   <option value="900">₹900</option>
-   <option value="0">₹0</option>
-  </select>
- </div>
-
- <div class="form-grid">
-  <div class="field">
-   <label for="arrHike">DA में वृद्धि (%)</label>
-   <input id="arrHike" type="number" min="0" step="0.01" value="3">
-  </div>
-  <div class="field">
-   <label for="arrMonths">एरियर के महीने</label>
-   <input id="arrMonths" type="number" min="1" step="1" value="4">
-  </div>
- </div>
-
- <button class="primary-btn" id="arrCalc">Calculate DA Arrear</button>
-
- <div class="output" id="resultCardArrear" style="display:none">
-  <h3>एरियर गणना का परिणाम</h3>
-  <div class="output-grid">
-   <div class="metric"><small>Basic पर मासिक DA वृद्धि</small><b id="resArrBasicInc">₹0.00</b></div>
-   <div class="metric"><small>TPA पर मासिक DA वृद्धि</small><b id="resArrTpaInc">₹0.00</b></div>
-   <div class="metric"><small>कुल Gross Arrear</small><b id="resArrGross">₹0.00</b></div>
-   <div class="metric"><small>10% अनुमानित NPS कटौती</small><b id="resArrNps">-₹0.00</b></div>
-   <div class="metric" style="grid-column:1/-1">
-    <small>अनुमानित Net Payable</small>
-    <b id="resArrNet">₹0.00</b>
-   </div>
-  </div>
-  <p class="status">नोट: NPS कटौती Basic पर DA वृद्धि वाले एरियर हिस्से की 10% अनुमानित राशि है। वास्तविक कटौती लागू नियमों के अनुसार अलग हो सकती है।</p>
- </div>
-
- <button class="secondary-btn backHome">← Home</button>
-</section>
-
-<!-- KMA TRACKER -->
-<section class="page" id="kmaPage">
- <h2 class="page-title">🚂 Kilometer Allowance (KMA)</h2>
- <p class="sub">किलोमीटर, शंटिंग और घाट सेक्शन के आधार पर गणना</p>
-
- <div class="field">
-  <label for="kmaRateSelect">प्रति 100 किलोमीटर दर (₹)</label>
-  <select id="kmaRateSelect">
-   <option value="0">दर चुनें</option>
-   <option value="100">₹100</option>
-   <option value="150">₹150</option>
-   <option value="200">₹200</option>
-   <option value="250">₹250</option>
-   <option value="300">₹300</option>
-  </select>
- </div>
- <div class="field">
-  <label for="kmaKmRun">वास्तविक किलोमीटर</label>
-  <input id="kmaKmRun" type="number" min="0" step="0.1" value="0">
- </div>
- <div class="field">
-  <label for="kmaShuntingHours">शंटिंग के घंटे</label>
-  <input id="kmaShuntingHours" type="number" min="0" step="0.1" value="0">
- </div>
- <label class="checkbox-container">
-  <input type="checkbox" id="kmaGhatSection">
-  घाट सेक्शन लागू है
- </label>
-
- <button class="primary-btn" id="kmaCalc">Calculate KMA</button>
- <div class="output">
-  <h3>गणना का परिणाम</h3>
-  <div class="output-grid">
-   <div class="metric"><small>प्रभावी दूरी</small><b id="kmaEffectiveKm">—</b></div>
-   <div class="metric"><small>चुनी गई दर</small><b id="kmaSelectedRate">—</b></div>
-   <div class="metric" style="grid-column:1/-1"><small>कुल KMA</small><b id="kmaTotal">—</b></div>
-  </div>
-  <p class="status" id="kmaStatus">अपनी जानकारी भरकर गणना करें</p>
- </div>
- <button class="secondary-btn backHome">← Home</button>
-</section>
-
-<!-- HISTORY PAGE: बाकी कैलकुलेटरों के लिए -->
-<section class="page" id="historyPage">
- <h2 class="page-title">📊 Calculation History</h2>
- <p class="sub">सहेजी गई गणनाओं का रिकॉर्ड</p>
- <div id="historyList"></div>
- <button class="secondary-btn" id="clearHistory">सारा इतिहास मिटाएँ</button>
- <button class="secondary-btn backHome">← Home</button>
-</section>
-
-<!-- MORE TOOLS PAGE -->
-<section class="page" id="morePage">
- <h2 class="page-title">🧰 अन्य रेलवे भत्ते</h2>
- <p class="sub">आगे के संस्करण में अन्य भत्ता कैलकुलेटर जोड़े जा सकते हैं।</p>
- <p>अभी उपलब्ध: NDA, OTA, DA Arrear और KMA</p>
- <button class="secondary-btn backHome">← Home</button>
-</section>
-
-<div class="ad-slot" id="bottomAd">Advertisement space — reserved for approved ad placement</div>
+ </section>
+ <section class="page" id="kmaPage">
+  <h2 class="page-title">🚂 KMA Tracker — Running Staff Mileage</h2><p class="sub">रनिंग स्टाफ के वास्तविक किलोमीटर, शंटिंग और घाट सेक्शन के आधार पर माइलेज भत्ता</p>
+  <div class="field"><label for="kmaPost">रनिंग पद चुनें</label><select id="kmaPost"><option value="662.50">लोको पायलट पैसेंजर (LP Passenger) — ₹662.50/100 KM</option><option value="678.75" selected>लोको पायलट गुड्स (LP Goods) — ₹678.75/100 KM</option><option value="491.25">असिस्टेंट लोको पायलट (ALP) — ₹491.25/100 KM</option><option value="588.75">ट्रेन मैनेजर पैसेंजर (TM Mail/Exp) — ₹588.75/100 KM</option><option value="597.50">ट्रेन मैनेजर गुड्स (TM Goods) — ₹597.50/100 KM</option></select></div>
+  <div class="field"><label for="actualKM">कुल चलाए गए किलोमीटर (Actual KM Run)</label><input id="actualKM" type="number" inputmode="decimal" min="0" step="0.1" value="1200" placeholder="उदा. 1200"></div>
+  <div class="field"><label for="shuntingHours">शंटिंग ड्यूटी के कुल घंटे (1 घंटा = 15 KM)</label><input id="shuntingHours" type="number" inputmode="decimal" min="0" step="0.1" value="0" placeholder="उदा. 4"></div>
+  <div class="field" style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="isGhatSection" style="width:20px;height:20px"><label for="isGhatSection" style="margin:0;color:#d97706">⛰️ घाट सेक्शन ड्यूटी? (1.5x किलोमीटर)</label></div>
+  <button class="primary-btn" id="kmaCalc" style="background:linear-gradient(90deg,#ff5722,#d84315)">Calculate Mileage Allowance</button>
+  <div class="output"><h3>गणना का परिणाम</h3><div class="output-grid"><div class="metric"><small>प्रभावी कुल किलोमीटर</small><b id="resEffectiveKM">—</b></div><div class="metric"><small>दर प्रति 100 KM</small><b id="resKMARate">—</b></div><div class="metric" style="grid-column:1/-1"><small>Total KMA Payable</small><b id="resTotalKMA">—</b></div></div><p class="status" id="kmaStatus">विवरण भरकर गणना करें।</p><div class="form-grid" style="margin-top:10px"><button class="secondary-btn" id="saveKMA">💾 इतिहास में सेव करें</button><button class="secondary-btn" id="pdfKMA">📄 KMA PDF डाउनलोड</button></div></div>
+  <p class="status">नोट: यह कैलकुलेटर दिए गए रेट और गणना नियमों पर आधारित है। भुगतान से पहले लागू रेलवे आदेश सत्यापित करें।</p><button class="secondary-btn backHome">← Home</button>
+ </section>
+ <section class="page" id="historyPage"><h2 class="page-title">📊 Calculation History</h2><p class="sub">इस मोबाइल/ब्राउज़र में आपकी पिछली गणनाएँ सुरक्षित रहेंगी।</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><button class="secondary-btn" id="historyPdf">📄 PDF रिपोर्ट बनाएं</button><button class="secondary-btn" id="clearHistory">इतिहास मिटाएँ</button></div><div id="historyList"><p>अभी कोई गणना सेव नहीं है।</p></div><p class="status">नोट: इतिहास इसी डिवाइस और ब्राउज़र में सेव होता है; ऐप डेटा साफ़ करने पर मिट सकता है।</p><button class="secondary-btn backHome">← Home</button></section>
+ <section class="page" id="morePage"><h2 class="page-title">🧰 अन्य रेलवे भत्ते</h2><p class="sub">अगले चरण में अन्य भत्ता कैलकुलेटर जोड़े जा सकते हैं।</p><p>अभी उपलब्ध: NDA और OTA।</p><button class="secondary-btn backHome">← Home</button></section>
+ <div class="ad-slot" id="bottomAd">Advertisement space — reserved for approved ad placement</div>
 </main>
-
-<nav class="bottom">
- <button data-home><span>⌂</span>Home</button>
- <button data-open="ndaPage"><span>🌙</span>NDA</button>
- <button data-open="otaPage"><span>⏱</span>OTA</button>
- <button data-open="kmaPage"><span>🚂</span>KMA</button>
- <button data-action="share"><span>↗</span>Share</button>
-</nav>
+<nav class="bottom"><button data-home><span>⌂</span>Home</button><button data-open="ndaPage"><span>🌙</span>NDA</button><button data-open="otaPage"><span>⏱</span>OTA</button><button data-open="kmaPage"><span>🚂</span>KMA</button><button data-action="share"><span>↗</span>Share</button></nav>
 </div>
-
-<div class="drawer-back" id="drawer">
- <aside class="drawer">
-  <button id="closeDrawer">✕ Close</button>
-  <h2>Railway Allowance Calculator</h2>
-  <b>Rohit Kumar</b><br>Founder & App Owner
-  <button data-home>⌂ Home</button>
-  <button data-open="ndaPage">🌙 Night Duty Allowance</button>
-  <button data-open="otaPage">⏱ Overtime Allowance</button>
-  <button data-open="daArrearPage">📈 DA Arrear Calculator</button>
-  <button data-open="kmaPage">🚂 KMA Tracker</button>
-  <button data-open="historyPage">📊 Calculation History</button>
-  <button id="aboutBtn">About App</button>
-  <button id="privacyBtn">Privacy & Disclaimer</button>
- </aside>
- </div>
- <script>
-"use strict";
-
-// ======================================
-// सामान्य हेल्पर
-// ======================================
-
-const $ = id => document.getElementById(id);
-
-const money = value => "₹" + Number(value).toLocaleString("en-IN", {
- minimumFractionDigits: 2,
- maximumFractionDigits: 2
-});
-
-let calculatedData = {
- type: "",
- summary: "",
- resultText: ""
-};
-
-function saveCalculationData(type, summary, resultText) {
- calculatedData = {
-  type,
-  summary: Number(summary).toFixed(2),
-  resultText
- };
+<div class="drawer-back" id="drawer"><aside class="drawer"><button id="closeDrawer">✕ Close</button><h2>Railway Allowance Calculator</h2><p><b>Rohit Kumar</b><br>Founder & App Owner</p><button data-home>⌂ Home</button><button data-open="ndaPage">🌙 Night Duty Allowance</button><button data-open="otaPage">⏱ Overtime Allowance</button><button data-open="kmaPage">🚂 KMA Tracker</button><button data-open="historyPage">📊 Calculation History</button><button id="aboutBtn">ⓘ About App</button><button id="privacyBtn">♧ Privacy & Disclaimer</button><p style="font-size:12px;color:#68758c">Version 2.0.0 · Login and payment are not connected yet.</p></aside></div>
+<script>
+const $=id=>document.getElementById(id);
+const money=n=>"₹ "+Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const HISTORY_KEY="railwayAllowanceHistoryV2";
+const HISTORY_DAYS=14;
+let latestNDA=null, latestOTA=null, latestKMA=null;
+function getHistory(){
+ let rows=[];try{rows=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");if(!Array.isArray(rows))rows=[];}catch(e){rows=[];}
+ const cutoff=Date.now()-HISTORY_DAYS*24*60*60*1000;
+ rows=rows.filter(r=>{const stamp=Number(r.timestamp)||Date.parse(r.date||"");return Number.isFinite(stamp)&&stamp>=cutoff;})
+          .map(r=>({...r,timestamp:Number(r.timestamp)||Date.parse(r.date||"")}));
+ try{localStorage.setItem(HISTORY_KEY,JSON.stringify(rows));}catch(e){}
+ return rows;
 }
-
-// ======================================
-// PAGE NAVIGATION
-// ======================================
-
-function showPage(pageId) {
- document.querySelectorAll(".page").forEach(page => {
-  page.classList.toggle("active", page.id === pageId);
- });
-
- $("homePage").style.display = pageId === "homePage" ? "block" : "none";
-
- $("drawer").classList.remove("open");
-
- window.scrollTo({ top: 0, behavior: "smooth" });
+function saveHistory(item){
+ if(!item){alert("पहले गणना करें।");return;}
+ const rows=getHistory();rows.unshift({...item,id:Date.now(),timestamp:Date.now(),date:new Date().toLocaleString("en-IN")});
+ try{localStorage.setItem(HISTORY_KEY,JSON.stringify(rows.slice(0,100)));renderHistory();alert("गणना इतिहास में सुरक्षित हो गई।");}
+ catch(e){alert("इतिहास सुरक्षित नहीं हो सका। ब्राउज़र स्टोरेज उपलब्ध नहीं है।");}
 }
-
-document.querySelectorAll("[data-open]").forEach(button => {
- button.addEventListener("click", () => {
-  showPage(button.dataset.open);
- });
-});
-
-document.querySelectorAll("[data-home], .backHome").forEach(button => {
- button.addEventListener("click", () => showPage("homePage"));
-});
-
-$("menuBtn").addEventListener("click", () => {
- $("drawer").classList.add("open");
-});
-
-$("closeDrawer").addEventListener("click", () => {
- $("drawer").classList.remove("open");
-});
-
-$("drawer").addEventListener("click", event => {
- if (event.target === $("drawer")) {
-  $("drawer").classList.remove("open");
- }
-});
-
-// ======================================
-// 1. NDA CALCULATION
-// ======================================
-
-function calculateNDA() {
- const basic = Number($("ndaBasic").value);
- const da = Number($("ndaDa").value);
- const hours = Number($("ndaHours").value);
-
- const valid =
-  Number.isFinite(basic) &&
-  Number.isFinite(da) &&
-  Number.isFinite(hours) &&
-  basic > 0 &&
-  da >= 0 &&
-  hours >= 0;
-
- if (!valid) {
-  $("ndaStatus").textContent = "कृपया सही जानकारी भरें।";
-  $("ndaStatus").className = "status error";
-  $("ndaPerHour").textContent = "—";
-  $("ndaTotal").textContent = "—";
-  return;
- }
-
- // NDA प्रति घंटा दर = (Basic + DA) / 200
- // घंटे की अधिकतम सीमा 24 नहीं रखी गई है।
- const hourly = (basic + da) / 1200;
- const total = hourly * hours;
-
- $("ndaPerHour").textContent = money(hourly);
- $("ndaTotal").textContent = money(total);
-
- $("ndaStatus").textContent = "गणना सफलतापूर्वक पूरी हुई।";
- $("ndaStatus").className = "status";
-
- saveCalculationData(
-  "NDA",
-  total,
-  `Basic Pay: ₹${basic}, DA Amount: ₹${da}, Night Duty Hours: ${hours}, Total NDA: ₹${total.toFixed(2)}`
- );
+function deleteHistoryItem(id){
+ if(!confirm("क्या यह रिकॉर्ड मिटाना चाहते हैं?"))return;
+ localStorage.setItem(HISTORY_KEY,JSON.stringify(getHistory().filter(r=>String(r.id)!==String(id))));renderHistory();
 }
-
-$("ndaCalc").addEventListener("click", calculateNDA);
-
-// ======================================
-// 2. OTA CALCULATION
-// ======================================
-
-const otaPosts = {
- sm:   { basic: 35400, tpa: 4700, category: "continuous", running: false },
- lp:   { basic: 35400, tpa: 3600, category: "running", running: true },
- pm:   { basic: 18000, tpa: 1800, category: "continuous", running: false },
- tm:   { basic: 29200, tpa: 3600, category: "running", running: true },
- ws:   { basic: 25500, tpa: 1800, category: "workshop", running: false },
- tmv:  { basic: 18000, tpa: 1800, category: "continuous", running: false }
-};
-
-let otaCategory = "continuous";
-let otaRunning = false;
-
-$("otaPost").addEventListener("change", event => {
- const post = otaPosts[event.target.value];
- if (!post) return;
-
- $("otaBasic").value = post.basic;
- $("otaTpa").value = post.tpa;
-
- otaCategory = post.category;
- otaRunning = post.running;
-});
-
-function calculateOTA() {
- const basic = Number($("otaBasic").value);
- const tpa = Number($("otaTpa").value);
- const da = Number($("otaDa").value);
- const hours = Number($("otaHours").value);
-
- const valid =
-  Number.isFinite(basic) &&
-  Number.isFinite(tpa) &&
-  Number.isFinite(da) &&
-  Number.isFinite(hours) &&
-  basic > 0 && tpa >= 0 && da >= 0 &&
-  hours >= 0 && hours <= 336;
-
- if (!valid) {
-  $("otaRate").textContent = "—";
-  $("ota15").textContent = "—";
-  $("ota20").textContent = "—";
-  $("otaTotal").textContent = "—";
-  $("otaStatus").textContent = "कृपया सही जानकारी भरें।";
-  $("otaStatus").className = "status error";
-  return;
- }
-
- const daFactor = 1 + da / 100;
- const calculatedBasic = otaRunning ? basic * 1.3 : basic;
- const totalGrossPay = (calculatedBasic * daFactor) + (tpa * daFactor);
- const hourlyRate = totalGrossPay / 104;
-
- let hours15 = 0;
- let hours20 = 0;
-
- if (otaCategory === "workshop") {
-  if (hours > 96) hours20 = hours - 96;
- } else {
-  const extraHours = Math.max(0, hours - 96);
-
-  if (extraHours <= 12) {
-   hours15 = extraHours;
-  } else {
-   hours15 = 12;
-   hours20 = extraHours - 12;
-  }
- }
-
- const totalOta =
-  (hours15 * hourlyRate * 1.5) +
-  (hours20 * hourlyRate * 2);
-
- $("otaRate").textContent = money(hourlyRate);
- $("ota15").textContent = hours15.toFixed(1) + " घंटे";
- $("ota20").textContent = hours20.toFixed(1) + " घंटे";
- $("otaTotal").textContent = money(totalOta);
-
- $("otaStatus").textContent =
-  "गणना पूरी हुई। अंतिम भुगतान लागू रेलवे नियमों और आदेशों के अनुसार जाँचें।";
- $("otaStatus").className = "status";
-
- saveCalculationData(
-  "OTA",
-  totalOta,
-  `Basic Pay: ₹${basic}, TPA: ₹${tpa}, DA: ${da}%, कुल घंटे: ${hours}, 1.5x घंटे: ${hours15}, 2x घंटे: ${hours20}, Total OTA: ₹${totalOta.toFixed(2)}`
- );
-}
-
-$("otaCalc").addEventListener("click", calculateOTA);
-  // ======================================
-// 3. DA ARREAR CALCULATION
-// इसमें History और PDF नहीं हैं।
-// ======================================
-
-function calculateDAArrear() {
- const basic = Number($("arrBasic").value);
- const tpa = Number($("arrTpa").value);
- const hike = Number($("arrHike").value);
- const months = Number($("arrMonths").value);
-
- const valid =
-  Number.isFinite(basic) &&
-  Number.isFinite(tpa) &&
-  Number.isFinite(hike) &&
-  Number.isFinite(months) &&
-  basic > 0 &&
-  tpa >= 0 &&
-  hike >= 0 &&
-  months > 0;
-
- if (!valid) {
-  alert("कृपया सभी जानकारी सही भरें।");
-  return;
- }
-
- const basicInc = basic * hike / 100;
- const tpaInc = tpa * hike / 100;
-
- const gross = (basicInc + tpaInc) * months;
-
- // NPS की अनुमानित 10% कटौती केवल Basic DA एरियर पर
- const nps = basicInc * months * 0.10;
-
- const net = gross - nps;
-
- $("resArrBasicInc").textContent = money(basicInc);
- $("resArrTpaInc").textContent = money(tpaInc);
- $("resArrGross").textContent = money(gross);
- $("resArrNps").textContent = "-" + money(nps);
- $("resArrNet").textContent = money(net);
-
- $("resultCardArrear").style.display = "block";
-}
-
-$("arrCalc").addEventListener("click", calculateDAArrear);
-
-// ======================================
-// 4. KMA CALCULATION
-// ======================================
-
-function updateKmaRateLabel() {
- const rate = Number($("kmaRateSelect").value);
- $("kmaSelectedRate").textContent = money(rate);
-}
-
-$("kmaRateSelect").addEventListener("change", updateKmaRateLabel);
-
-function calculateKMA() {
- const rate = Number($("kmaRateSelect").value);
- const actualKm = Number($("kmaKmRun").value);
- const shuntingHours = Number($("kmaShuntingHours").value);
- const isGhat = $("kmaGhatSection").checked;
-
- const valid =
-  Number.isFinite(rate) &&
-  Number.isFinite(actualKm) &&
-  Number.isFinite(shuntingHours) &&
-  rate > 0 &&
-  actualKm >= 0 &&
-  shuntingHours >= 0;
-
- if (!valid) {
-  $("kmaStatus").textContent = "कृपया दर और किलोमीटर की सही जानकारी भरें।";
-  $("kmaStatus").className = "status error";
-  return;
- }
-
- // 1 घंटा शंटिंग = 15 किलोमीटर
- let effectiveKm = actualKm + (shuntingHours * 15);
-
- // घाट सेक्शन में 1.5 गुना दूरी
- if (isGhat) {
-  effectiveKm *= 1.5;
- }
-
- const totalKma = (effectiveKm / 100) * rate;
-
- $("kmaEffectiveKm").textContent = effectiveKm.toFixed(2) + " KM";
- $("kmaSelectedRate").textContent = money(rate);
- $("kmaTotal").textContent = money(totalKma);
-
- $("kmaStatus").textContent = "गणना सफलतापूर्वक पूरी हुई।";
- $("kmaStatus").className = "status";
-
- saveCalculationData(
-  "KMA",
-  totalKma,
-  `प्रभावी दूरी: ${effectiveKm.toFixed(2)} KM, प्रति 100 KM दर: ₹${rate}, कुल KMA: ₹${totalKma.toFixed(2)}`
- );
-}
-
-$("kmaCalc").addEventListener("click", calculateKMA);
-  // ======================================
-// 5. HISTORY
-// DA ARREAR को History में सेव नहीं किया जाएगा।
-// ======================================
-
-function saveToHistory() {
- if (!calculatedData.type || !calculatedData.summary) {
-  alert("पहले गणना पूरी करें।");
-  return;
- }
-
- if (calculatedData.type === "DA Arrear") {
-  return;
- }
-
- let history = [];
-
- try {
-  history = JSON.parse(localStorage.getItem("railway_history")) || [];
- } catch (error) {
-  history = [];
- }
-
- history.unshift({
-  id: Date.now(),
-  type: calculatedData.type,
-  date: new Date().toLocaleString("hi-IN"),
-  text: calculatedData.resultText,
-  amount: calculatedData.summary
- });
-
- localStorage.setItem("railway_history", JSON.stringify(history));
-
- alert("गणना इतिहास में सुरक्षित हो गई।");
-}
-
-function loadHistory() {
- let history = [];
-
- try {
-  history = JSON.parse(localStorage.getItem("railway_history")) || [];
- } catch (error) {
-  history = [];
- }
-
- const list = $("historyList");
-
- if (!history.length) {
-  list.innerHTML = '<p class="status">अभी कोई रिकॉर्ड उपलब्ध नहीं है।</p>';
-  return;
- }
-
- list.innerHTML = "";
-
- history.forEach(item => {
-  const card = document.createElement("div");
-  card.className = "history-item";
-
-  const heading = document.createElement("b");
-  heading.textContent = item.type;
-
-  const details = document.createElement("small");
-  details.textContent = item.date + " | " + item.text;
-
-  const amount = document.createElement("b");
-  amount.textContent = "कुल राशि: " + money(item.amount);
-
-  card.append(heading, details, amount);
-  list.appendChild(card);
+function renderHistory(){
+ const rows=getHistory(),box=$("historyList");if(!box)return;box.replaceChildren();
+ if(!rows.length){const p=document.createElement("p");p.textContent="पिछले 14 दिनों में कोई सेव की गई गणना नहीं है।";box.appendChild(p);return;}
+ rows.forEach(r=>{
+  const card=document.createElement("div");card.className="history-item";
+  const title=document.createElement("b");title.textContent=`${r.type||"गणना"} — ${r.total||""}`;
+  const small=document.createElement("small");small.textContent=`${r.date||""} · ${r.details||""}`;
+  const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:9px";
+  const pdf=document.createElement("button");pdf.className="secondary-btn";pdf.textContent="📄 PDF";pdf.addEventListener("click",()=>downloadRecordPDF(r));
+  const del=document.createElement("button");del.className="secondary-btn";del.textContent="🗑️ मिटाएँ";del.addEventListener("click",()=>deleteHistoryItem(r.id));
+  actions.append(pdf,del);card.append(title,small,actions);box.appendChild(card);
  });
 }
-
-$("clearHistory").addEventListener("click", () => {
- if (confirm("क्या आप पूरा इतिहास मिटाना चाहते हैं?")) {
-  localStorage.removeItem("railway_history");
-  loadHistory();
- }
-});
-
-document.querySelector('[data-open="historyPage"]').addEventListener("click", loadHistory);
-
-// ======================================
-// 6. PDF REPORT
-// केवल NDA, OTA और KMA के लिए।
-// ======================================
-
-function generatePDF() {
- if (!calculatedData.type || !calculatedData.summary) {
-  alert("पहले NDA, OTA या KMA की गणना करें।");
-  return;
- }
-
- if (calculatedData.type === "DA Arrear") {
-  alert("DA Arrear के लिए PDF सुविधा उपलब्ध नहीं है।");
-  return;
- }
-
- if (!window.jspdf || !window.jspdf.jsPDF) {
-  alert("PDF लाइब्रेरी लोड नहीं हुई। इंटरनेट कनेक्शन जाँचें।");
-  return;
- }
-
- const { jsPDF } = window.jspdf;
- const doc = new jsPDF();
-
- doc.setFontSize(20);
- doc.text("Railway Allowance Statement", 20, 20);
-
- doc.setFontSize(11);
- doc.text("Designed by: Rohit Kumar - Railway Staff Tools", 20, 30);
- doc.text("Report: " + new Date().toLocaleString(), 20, 38);
-
- doc.line(20, 44, 190, 44);
-
- doc.setFontSize(14);
- doc.text("Allowance: " + calculatedData.type, 20, 56);
-
- doc.setFontSize(11);
- const lines = doc.splitTextToSize(calculatedData.resultText, 165);
- doc.text(lines, 20, 68);
-
- const finalY = Math.min(68 + lines.length * 6 + 12, 260);
-
- doc.setFontSize(15);
- doc.text(
-  "Final Payable Amount: Rs. " + calculatedData.summary,
-  20,
-  finalY
- );
-
- doc.save("Railway_" + calculatedData.type.replace(/\s+/g, "_") + "_Report.pdf");
+function showPage(id){$("homePage").style.display=id==="homePage"?"block":"none";document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));window.scrollTo({top:0,behavior:"smooth"});$("drawer").classList.remove("open")}
+document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.open)));
+document.querySelectorAll("[data-home],.backHome").forEach(b=>b.addEventListener("click",()=>showPage("homePage")));
+$("menuBtn").addEventListener("click",()=>$("drawer").classList.add("open"));
+$("closeDrawer").addEventListener("click",()=>$("drawer").classList.remove("open"));
+$("drawer").addEventListener("click",e=>{if(e.target===$("drawer"))$("drawer").classList.remove("open")});
+$("aboutBtn").addEventListener("click",()=>alert("Railway Allowance Calculator\\nFounder & App Owner: Rohit Kumar\\nIndependent utility; not an official Indian Railways app."));
+$("privacyBtn").addEventListener("click",()=>alert("Privacy: This version calculates values on your device and does not send salary inputs to a server. OTA/NDA results are estimates based on the configured rules. Verify applicable railway orders before claiming payment."));
+$("premiumBtn").addEventListener("click",()=>alert("Premium membership and payment are planned features. Payment is not enabled in this version."));
+function calcNDA(){
+ const bs=$("ndaBasic").value,ds=$("ndaDa").value,hs=$("ndaHours").value,b=Number(bs),d=Number(ds),h=Number(hs);
+ const valid=bs!==""&&ds!==""&&hs!==""&&Number.isFinite(b)&&Number.isFinite(d)&&Number.isFinite(h)&&b>0&&d>=0&&h>0&&h<=2000;
+ if(!valid){$("ndaPerHour").textContent="—";$("ndaTotal").textContent="—";$("ndaStatus").textContent="कृपया सही मान भरें। Basic Pay शून्य से अधिक, DA शून्य या अधिक और घंटे 0 से अधिक तथा 24 से अधिक होने चाहिए।";$("ndaStatus").className="status error";latestNDA=null;return;}
+ const hourly=(b+d)/1200,total=hourly*h;
+ $("ndaPerHour").textContent=money(hourly);$("ndaTotal").textContent=money(total);$("ndaStatus").textContent="गणना पूरी हुई।";$("ndaStatus").className="status";
+ latestNDA={type:"NDA",total:money(total),details:`Basic ₹${b} · DA ₹${d} · Night Duty Hours ${h}`,basic:b,da:d,hours:h,hourly,totalValue:total};
 }
-
-// ======================================
-// 7. SHARE APP
-// ======================================
-
-async function shareApp() {
- const data = {
-  title: "Railway Allowance Calculator",
-  text: "Railway Staff Tools - Railway Allowance Calculator",
-  url: location.href
- };
-
- if (navigator.share) {
-  try {
-   await navigator.share(data);
-  } catch (error) {}
- } else if (navigator.clipboard) {
-  try {
-   await navigator.clipboard.writeText(location.href);
-   alert("ऐप का लिंक कॉपी हो गया।");
-  } catch (error) {
-   prompt("ऐप का लिंक कॉपी करें:", location.href);
-  }
- } else {
-  prompt("ऐप का लिंक कॉपी करें:", location.href);
- }
+["ndaBasic","ndaDa","ndaHours"].forEach(id=>$(id).addEventListener("input",()=>{latestNDA=null;}));$("ndaCalc").addEventListener("click",calcNDA);$("saveNDA").addEventListener("click",()=>saveHistory(latestNDA));$("pdfNDA").addEventListener("click",()=>{if(!latestNDA)calcNDA();if(latestNDA)downloadRecordPDF(latestNDA);});
+const posts={sm:{basic:35400,tpa:3600,category:"continuous",running:false},lp:{basic:35400,tpa:3600,category:"running",running:true},pm:{basic:19900,tpa:1800,category:"continuous",running:false},tm:{basic:29200,tpa:3600,category:"running",running:true},ws:{basic:25500,tpa:3600,category:"workshop",running:false},tmv:{basic:18000,tpa:1800,category:"continuous",running:false}};
+let otaCategory="continuous",otaRunning=false;
+$("otaPost").addEventListener("change",e=>{const p=posts[e.target.value];if(!p)return;$("otaBasic").value=p.basic;$("otaTpa").value=p.tpa;otaCategory=p.category;otaRunning=p.running;$("otaStatus").textContent="पद के अनुसार प्रारंभिक वेतन भरा गया है। आवश्यकता अनुसार बदल सकते हैं।";$("otaStatus").className="status"});
+function calcOTA(){
+ const bs=$("otaBasic").value,ts=$("otaTpa").value,ds=$("otaDa").value,hs=$("otaHours").value;
+ const b=Number(bs),t=Number(ts),da=Number(ds),hours=Number(hs);
+ const valid=bs!==""&&ts!==""&&ds!==""&&hs!==""&&[b,t,da,hours].every(Number.isFinite)&&b>0&&t>=0&&da>=0&&hours>=0&&hours<=336;
+ if(!valid){["otaRate","ota15","ota20","otaTotal"].forEach(id=>$(id).textContent="—");$("otaStatus").textContent="कृपया Basic Pay, TPA, DA% और 14 दिनों के कुल घंटे सही भरें।";$("otaStatus").className="status error";latestOTA=null;return;}
+ const daFactor=1+(da/100),calculatedBasic=otaRunning?(b*1.3):b,totalGrossPay=(calculatedBasic*daFactor)+(t*daFactor),hourlyRate=totalGrossPay/104;
+ let hours15x=0,hours20x=0;
+ if(otaCategory==="workshop"){if(hours>96)hours20x=hours-96;}
+ else{const extraHours=hours-96;if(extraHours>0){if(extraHours<=12)hours15x=extraHours;else{hours15x=12;hours20x=extraHours-12;}}}
+ const totalOTA=(hours15x*hourlyRate*1.5)+(hours20x*hourlyRate*2);
+ $("otaRate").textContent=money(hourlyRate);$("ota15").textContent=hours15x.toFixed(1)+" hrs";$("ota20").textContent=hours20x.toFixed(1)+" hrs";$("otaTotal").textContent=money(totalOTA);
+ $("otaStatus").textContent="गणना पूरी हुई। अंतिम भुगतान से पहले लागू रेलवे नियम/आदेश और पात्रता जाँचें।";$("otaStatus").className="status";
+ latestOTA={type:"OTA",total:money(totalOTA),details:`${$("otaPost").selectedOptions[0]?.text||"Custom"} · Basic ₹${b} · TPA ₹${t} · DA ${da}% · Hours ${hours}`,basic:b,tpa:t,daPercent:da,hours,hourly:hourlyRate,hours15x,hours20x,totalValue:totalOTA,post:$("otaPost").selectedOptions[0]?.text||"Custom"};
 }
-
-$("shareBtn").addEventListener("click", shareApp);
-
-document.querySelectorAll('[data-action="share"]').forEach(button => {
- button.addEventListener("click", shareApp);
-});
-
-// ======================================
-// 8. PDF BUTTON
-// ======================================
-
-document.querySelectorAll('[data-action="pdf"]').forEach(button => {
- button.addEventListener("click", () => {
-  if (!calculatedData.type) {
-   alert("पहले NDA, OTA या KMA की गणना करें।");
-   return;
-  }
-
-  generatePDF();
- });
-});
-
-// ======================================
-// 9. ABOUT, PRIVACY AND PREMIUM
-// ======================================
-
-$("aboutBtn").addEventListener("click", () => {
- alert("Railway Allowance Calculator\nFounder & Owner: Rohit Kumar\nRailway Staff Tools");
-});
-
-$("privacyBtn").addEventListener("click", () => {
- alert("यह संस्करण गणना आपके डिवाइस पर करता है। परिणाम सर्वर पर नहीं भेजे जाते। सभी गणनाएँ अनुमान हैं; लागू रेलवे नियम और आदेश अवश्य जाँचें।");
-});
-
-$("premiumBtn").addEventListener("click", () => {
- alert("Premium सुविधाएँ भविष्य के संस्करण में उपलब्ध होंगी।");
-});
-
-// ======================================
-// 10. INSTALL APP
-// ======================================
-
-let installPrompt = null;
-
-window.addEventListener("beforeinstallprompt", event => {
- event.preventDefault();
- installPrompt = event;
-});
-
-$("installAppBtn").addEventListener("click", async () => {
- if (!installPrompt) {
-  alert("यदि ऐप पहले से इंस्टॉल है तो इसका उपयोग करें। अन्यथा ब्राउज़र मेनू से Add to Home Screen चुनें।");
-  return;
- }
-
- installPrompt.prompt();
- await installPrompt.userChoice;
- installPrompt = null;
-});
-
-// ======================================
-// 11. INITIAL SETTINGS
-// ======================================
-
-showPage("homePage");
-
-if ("serviceWorker" in navigator) {
- window.addEventListener("load", () => {
-  navigator.serviceWorker.register("./sw.js").catch(() => {});
+$("otaCalc").addEventListener("click",calcOTA);$("saveOTA").addEventListener("click",()=>saveHistory(latestOTA));$("pdfOTA").addEventListener("click",()=>{if(!latestOTA)calcOTA();if(latestOTA)downloadRecordPDF(latestOTA);});
+   <button class="primary-btn" id="otaCalc">Calculate Overtime</button>
+  <div class="output"><h3>गणना का परिणाम</h3><div class="output-grid">
+   <div class="metric"><small>Hourly Rate</small><b id="otaRate">—</b></div>
+   <div class="metric"><small>1.5x दर वाले घंटे</small><b id="ota15">—</b></div>
+   <div class="metric"><small>2.0x दर वाले घंटे</small><b id="ota20">—</b></div>
+   <div class="metric"><small>Total OTA Payable</small><b id="otaTotal">—</b></div>
+  </div><p class="status" id="otaStatus">सभी विवरण भरकर गणना करें।</p><div class="form-grid" style="margin-top:10px"><button class="secondary-btn" id="saveOTA">💾 इतिहास में सेव करें</button><button class="secondary-btn" id="pdfOTA">📄 OTA PDF डाउनलोड</button></div></div>
+  <div class="ad-slot">Advertisement space — ads will appear here only after approval and integration</div>
+  <button class="secondary-btn backHome">← Home</button>
+ </section>
+ <section class="page" id="kmaPage">
+  <h2 class="page-title">🚂 KMA Tracker — Running Staff Mileage</h2><p class="sub">रनिंग स्टाफ के वास्तविक किलोमीटर, शंटिंग और घाट सेक्शन के आधार पर माइलेज भत्ता</p>
+  <div class="field"><label for="kmaPost">रनिंग पद चुनें</label><select id="kmaPost"><option value="662.50">लोको पायलट पैसेंजर (LP Passenger) — ₹662.50/100 KM</option><option value="678.75" selected>लोको पायलट गुड्स (LP Goods) — ₹678.75/100 KM</option><option value="491.25">असिस्टेंट लोको पायलट (ALP) — ₹491.25/100 KM</option><option value="588.75">ट्रेन मैनेजर पैसेंजर (TM Mail/Exp) — ₹588.75/100 KM</option><option value="597.50">ट्रेन मैनेजर गुड्स (TM Goods) — ₹597.50/100 KM</option></select></div>
+  <div class="field"><label for="actualKM">कुल चलाए गए किलोमीटर (Actual KM Run)</label><input id="actualKM" type="number" inputmode="decimal" min="0" step="0.1" value="1200" placeholder="उदा. 1200"></div>
+  <div class="field"><label for="shuntingHours">शंटिंग ड्यूटी के कुल घंटे (1 घंटा = 15 KM)</label><input id="shuntingHours" type="number" inputmode="decimal" min="0" step="0.1" value="0" placeholder="उदा. 4"></div>
+  <div class="field" style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="isGhatSection" style="width:20px;height:20px"><label for="isGhatSection" style="margin:0;color:#d97706">⛰️ घाट सेक्शन ड्यूटी? (1.5x किलोमीटर)</label></div>
+  <button class="primary-btn" id="kmaCalc" style="background:linear-gradient(90deg,#ff5722,#d84315)">Calculate Mileage Allowance</button>
+  <div class="output"><h3>गणना का परिणाम</h3><div class="output-grid"><div class="metric"><small>प्रभावी कुल किलोमीटर</small><b id="resEffectiveKM">—</b></div><div class="metric"><small>दर प्रति 100 KM</small><b id="resKMARate">—</b></div><div class="metric" style="grid-column:1/-1"><small>Total KMA Payable</small><b id="resTotalKMA">—</b></div></div><p class="status" id="kmaStatus">विवरण भरकर गणना करें।</p><div class="form-grid" style="margin-top:10px"><button class="secondary-btn" id="saveKMA">💾 इतिहास में सेव करें</button><button class="secondary-btn" id="pdfKMA">📄 KMA PDF डाउनलोड</button></div></div>
+  <p class="status">नोट: यह कैलकुलेटर दिए गए रेट और गणना नियमों पर आधारित है। भुगतान से पहले लागू रेलवे आदेश सत्यापित करें।</p><button class="secondary-btn backHome">← Home</button>
+ </section>
+ <section class="page" id="historyPage"><h2 class="page-title">📊 Calculation History</h2><p class="sub">इस मोबाइल/ब्राउज़र में आपकी पिछली गणनाएँ सुरक्षित रहेंगी।</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><button class="secondary-btn" id="historyPdf">📄 PDF रिपोर्ट बनाएं</button><button class="secondary-btn" id="clearHistory">इतिहास मिटाएँ</button></div><div id="historyList"><p>अभी कोई गणना सेव नहीं है।</p></div><p class="status">नोट: इतिहास इसी डिवाइस और ब्राउज़र में सेव होता है; ऐप डेटा साफ़ करने पर मिट सकता है।</p><button class="secondary-btn backHome">← Home</button></section>
+ <section class="page" id="morePage"><h2 class="page-title">🧰 अन्य रेलवे भत्ते</h2><p class="sub">अगले चरण में अन्य भत्ता कैलकुलेटर जोड़े जा सकते हैं।</p><p>अभी उपलब्ध: NDA और OTA।</p><button class="secondary-btn backHome">← Home</button></section>
+ <div class="ad-slot" id="bottomAd">Advertisement space — reserved for approved ad placement</div>
+</main>
+<nav class="bottom"><button data-home><span>⌂</span>Home</button><button data-open="ndaPage"><span>🌙</span>NDA</button><button data-open="otaPage"><span>⏱</span>OTA</button><button data-open="kmaPage"><span>🚂</span>KMA</button><button data-action="share"><span>↗</span>Share</button></nav>
+</div>
+<div class="drawer-back" id="drawer"><aside class="drawer"><button id="closeDrawer">✕ Close</button><h2>Railway Allowance Calculator</h2><p><b>Rohit Kumar</b><br>Founder & App Owner</p><button data-home>⌂ Home</button><button data-open="ndaPage">🌙 Night Duty Allowance</button><button data-open="otaPage">⏱ Overtime Allowance</button><button data-open="kmaPage">🚂 KMA Tracker</button><button data-open="historyPage">📊 Calculation History</button><button id="aboutBtn">ⓘ About App</button><button id="privacyBtn">♧ Privacy & Disclaimer</button><p style="font-size:12px;color:#68758c">Version 2.0.0 · Login and payment are not connected yet.</p></aside></div>
+<script>
+const $=id=>document.getElementById(id);
+const money=n=>"₹ "+Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const HISTORY_KEY="railwayAllowanceHistoryV2";
+const HISTORY_DAYS=14;
+let latestNDA=null, latestOTA=null, latestKMA=null;
+function getHistory(){
+ let rows=[];try{rows=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");if(!Array.isArray(rows))rows=[];}catch(e){rows=[];}
+ const cutoff=Date.now()-HISTORY_DAYS*24*60*60*1000;
+ rows=rows.filter(r=>{const stamp=Number(r.timestamp)||Date.parse(r.date||"");return Number.isFinite(stamp)&&stamp>=cutoff;})
+          .map(r=>({...r,timestamp:Number(r.timestamp)||Date.parse(r.date||"")}));
+ try{localStorage.setItem(HISTORY_KEY,JSON.stringify(rows));}catch(e){}
+ return rows;
+}
+function saveHistory(item){
+ if(!item){alert("पहले गणना करें।");return;}
+ const rows=getHistory();rows.unshift({...item,id:Date.now(),timestamp:Date.now(),date:new Date().toLocaleString("en-IN")});
+ try{localStorage.setItem(HISTORY_KEY,JSON.stringify(rows.slice(0,100)));renderHistory();alert("गणना इतिहास में सुरक्षित हो गई।");}
+ catch(e){alert("इतिहास सुरक्षित नहीं हो सका। ब्राउज़र स्टोरेज उपलब्ध नहीं है।");}
+}
+function deleteHistoryItem(id){
+ if(!confirm("क्या यह रिकॉर्ड मिटाना चाहते हैं?"))return;
+ localStorage.setItem(HISTORY_KEY,JSON.stringify(getHistory().filter(r=>String(r.id)!==String(id))));renderHistory();
+}
+function renderHistory(){
+ const rows=getHistory(),box=$("historyList");if(!box)return;box.replaceChildren();
+ if(!rows.length){const p=document.createElement("p");p.textContent="पिछले 14 दिनों में कोई सेव की गई गणना नहीं है।";box.appendChild(p);return;}
+ rows.forEach(r=>{
+  const card=document.createElement("div");card.className="history-item";
+  const title=document.createElement("b");title.textContent=`${r.type||"गणना"} — ${r.total||""}`;
+  const small=document.createElement("small");small.textContent=`${r.date||""} · ${r.details||""}`;
+  const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:9px";
+  const pdf=document.createElement("button");pdf.className="secondary-btn";pdf.textContent="📄 PDF";pdf.addEventListener("click",()=>downloadRecordPDF(r));
+  const del=document.createElement("button");del.className="secondary-btn";del.textContent="🗑️ मिटाएँ";del.addEventListener("click",()=>deleteHistoryItem(r.id));
+  actions.append(pdf,del);card.append(title,small,actions);box.appendChild(card);
  });
 }
+function showPage(id){$("homePage").style.display=id==="homePage"?"block":"none";document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));window.scrollTo({top:0,behavior:"smooth"});$("drawer").classList.remove("open")}
+document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.open)));
+document.querySelectorAll("[data-home],.backHome").forEach(b=>b.addEventListener("click",()=>showPage("homePage")));
+$("menuBtn").addEventListener("click",()=>$("drawer").classList.add("open"));
+$("closeDrawer").addEventListener("click",()=>$("drawer").classList.remove("open"));
+$("drawer").addEventListener("click",e=>{if(e.target===$("drawer"))$("drawer").classList.remove("open")});
+$("aboutBtn").addEventListener("click",()=>alert("Railway Allowance Calculator\\nFounder & App Owner: Rohit Kumar\\nIndependent utility; not an official Indian Railways app."));
+$("privacyBtn").addEventListener("click",()=>alert("Privacy: This version calculates values on your device and does not send salary inputs to a server. OTA/NDA results are estimates based on the configured rules. Verify applicable railway orders before claiming payment."));
+$("premiumBtn").addEventListener("click",()=>alert("Premium membership and payment are planned features. Payment is not enabled in this version."));
+function calcNDA(){
+ const bs=$("ndaBasic").value,ds=$("ndaDa").value,hs=$("ndaHours").value,b=Number(bs),d=Number(ds),h=Number(hs);
+ const valid=bs!==""&&ds!==""&&hs!==""&&Number.isFinite(b)&&Number.isFinite(d)&&Number.isFinite(h)&&b>0&&d>=0&&h>0&&h<=2000;
+ if(!valid){$("ndaPerHour").textContent="—";$("ndaTotal").textContent="—";$("ndaStatus").textContent="कृपया सही मान भरें। Basic Pay शून्य से अधिक, DA शून्य या अधिक और घंटे 0 से अधिक तथा 24 से अधिक होने चाहिए।";$("ndaStatus").className="status error";latestNDA=null;return;}
+ const hourly=(b+d)/1200,total=hourly*h;
+ $("ndaPerHour").textContent=money(hourly);$("ndaTotal").textContent=money(total);$("ndaStatus").textContent="गणना पूरी हुई।";$("ndaStatus").className="status";
+ latestNDA={type:"NDA",total:money(total),details:`Basic ₹${b} · DA ₹${d} · Night Duty Hours ${h}`,basic:b,da:d,hours:h,hourly,totalValue:total};
+}
+["ndaBasic","ndaDa","ndaHours"].forEach(id=>$(id).addEventListener("input",()=>{latestNDA=null;}));$("ndaCalc").addEventListener("click",calcNDA);$("saveNDA").addEventListener("click",()=>saveHistory(latestNDA));$("pdfNDA").addEventListener("click",()=>{if(!latestNDA)calcNDA();if(latestNDA)downloadRecordPDF(latestNDA);});
+const posts={sm:{basic:35400,tpa:3600,category:"continuous",running:false},lp:{basic:35400,tpa:3600,category:"running",running:true},pm:{basic:19900,tpa:1800,category:"continuous",running:false},tm:{basic:29200,tpa:3600,category:"running",running:true},ws:{basic:25500,tpa:3600,category:"workshop",running:false},tmv:{basic:18000,tpa:1800,category:"continuous",running:false}};
+let otaCategory="continuous",otaRunning=false;
+$("otaPost").addEventListener("change",e=>{const p=posts[e.target.value];if(!p)return;$("otaBasic").value=p.basic;$("otaTpa").value=p.tpa;otaCategory=p.category;otaRunning=p.running;$("otaStatus").textContent="पद के अनुसार प्रारंभिक वेतन भरा गया है। आवश्यकता अनुसार बदल सकते हैं।";$("otaStatus").className="status"});
+function calcOTA(){
+ const bs=$("otaBasic").value,ts=$("otaTpa").value,ds=$("otaDa").value,hs=$("otaHours").value;
+ const b=Number(bs),t=Number(ts),da=Number(ds),hours=Number(hs);
+ const valid=bs!==""&&ts!==""&&ds!==""&&hs!==""&&[b,t,da,hours].every(Number.isFinite)&&b>0&&t>=0&&da>=0&&hours>=0&&hours<=336;
+ if(!valid){["otaRate","ota15","ota20","otaTotal"].forEach(id=>$(id).textContent="—");$("otaStatus").textContent="कृपया Basic Pay, TPA, DA% और 14 दिनों के कुल घंटे सही भरें।";$("otaStatus").className="status error";latestOTA=null;return;}
+ const daFactor=1+(da/100),calculatedBasic=otaRunning?(b*1.3):b,totalGrossPay=(calculatedBasic*daFactor)+(t*daFactor),hourlyRate=totalGrossPay/104;
+ let hours15x=0,hours20x=0;
+ if(otaCategory==="workshop"){if(hours>96)hours20x=hours-96;}
+ else{const extraHours=hours-96;if(extraHours>0){if(extraHours<=12)hours15x=extraHours;else{hours15x=12;hours20x=extraHours-12;}}}
+ const totalOTA=(hours15x*hourlyRate*1.5)+(hours20x*hourlyRate*2);
+ $("otaRate").textContent=money(hourlyRate);$("ota15").textContent=hours15x.toFixed(1)+" hrs";$("ota20").textContent=hours20x.toFixed(1)+" hrs";$("otaTotal").textContent=money(totalOTA);
+ $("otaStatus").textContent="गणना पूरी हुई। अंतिम भुगतान से पहले लागू रेलवे नियम/आदेश और पात्रता जाँचें।";$("otaStatus").className="status";
+ latestOTA={type:"OTA",total:money(totalOTA),details:`${$("otaPost").selectedOptions[0]?.text||"Custom"} · Basic ₹${b} · TPA ₹${t} · DA ${da}% · Hours ${hours}`,basic:b,tpa:t,daPercent:da,hours,hourly:hourlyRate,hours15x,hours20x,totalValue:totalOTA,post:$("otaPost").selectedOptions[0]?.text||"Custom"};
+}
+$("otaCalc").addEventListener("click",calcOTA);$("saveOTA").addEventListener("click",()=>saveHistory(latestOTA));$("pdfOTA").addEventListener("click",()=>{if(!latestOTA)calcOTA();if(latestOTA)downloadRecordPDF(latestOTA);});
+ function calcKMA(){
+ const rate=Number($("kmaPost").value),actualRaw=$("actualKM").value,shuntRaw=$("shuntingHours").value,actualKM=Number(actualRaw),shuntingHours=Number(shuntRaw),isGhat=$("isGhatSection").checked;
+ const valid=actualRaw!==""&&shuntRaw!==""&&Number.isFinite(rate)&&Number.isFinite(actualKM)&&Number.isFinite(shuntingHours)&&actualKM>=0&&shuntingHours>=0&&(actualKM>0||shuntingHours>0);
+ if(!valid){["resEffectiveKM","resKMARate","resTotalKMA"].forEach(id=>$(id).textContent="—");$("kmaStatus").textContent="कृपया सही मान भरें। किलोमीटर और शंटिंग घंटे शून्य से कम नहीं होने चाहिए तथा दोनों में से कोई एक शून्य से अधिक हो।";$("kmaStatus").className="status error";latestKMA=null;return;}
+ const baseKM=isGhat?(actualKM*1.5):actualKM,shuntingKM=shuntingHours*15,totalEffectiveKM=baseKM+shuntingKM,totalKMAAmount=(totalEffectiveKM/100)*rate;
+ $("resEffectiveKM").textContent=totalEffectiveKM.toFixed(1)+" KM";$("resKMARate").textContent=money(rate)+" /100 KM";$("resTotalKMA").textContent=money(totalKMAAmount);$("kmaStatus").textContent="गणना पूरी हुई।";$("kmaStatus").className="status";
+ const postName=$("kmaPost").selectedOptions[0].text.split(" — ")[0];
+ latestKMA={type:"KMA",total:money(totalKMAAmount),details:`${postName} · Actual KM ${actualKM} · Shunting Hours ${shuntingHours} · Ghat Section ${isGhat?"Yes":"No"} · Effective KM ${totalEffectiveKM.toFixed(1)}`,post:postName,ratePer100KM:rate,actualKM,shuntingHours,isGhat,effectiveKM:totalEffectiveKM,totalValue:totalKMAAmount};
+}
+["kmaPost","actualKM","shuntingHours","isGhatSection"].forEach(id=>$(id).addEventListener("change",()=>{latestKMA=null;}));["actualKM","shuntingHours"].forEach(id=>$(id).addEventListener("input",()=>{latestKMA=null;}));
+$("kmaCalc").addEventListener("click",calcKMA);$("saveKMA").addEventListener("click",()=>saveHistory(latestKMA));$("pdfKMA").addEventListener("click",()=>{if(!latestKMA)calcKMA();if(latestKMA)downloadRecordPDF(latestKMA);});
+$("shareBtn").addEventListener("click",shareApp);document.querySelectorAll('[data-action="share"]').forEach(b=>b.addEventListener("click",shareApp));
+async function shareApp(){const data={title:"Railway Allowance Calculator",text:"रेलवे कर्मचारियों के लिए NDA और OTA Calculator",url:location.href};if(navigator.share){try{await navigator.share(data)}catch(e){}}else if(navigator.clipboard){await navigator.clipboard.writeText(location.href);alert("ऐप लिंक कॉपी हो गया।")}else{prompt("ऐप लिंक कॉपी करें",location.href)}}
+
+function makePDF(title,lines,filename){
+ if(!window.jspdf||!window.jspdf.jsPDF){alert("PDF लाइब्रेरी लोड नहीं हुई। इंटरनेट कनेक्शन जाँचें और फिर प्रयास करें।");return;}
+ const {jsPDF}=window.jspdf,doc=new jsPDF();doc.setFontSize(17);doc.text(title,14,18);doc.setFontSize(10);doc.text("Railway Allowance Calculator",14,27);
+ let y=40;lines.forEach(line=>{const wrapped=doc.splitTextToSize(String(line),180);if(y+wrapped.length*7>278){doc.addPage();y=20;}doc.text(wrapped,14,y);y+=wrapped.length*7+3;});
+ doc.setFontSize(9);doc.text("स्वतंत्र गणना टूल — भारतीय रेल का आधिकारिक ऐप नहीं। भुगतान से पहले लागू नियम/आदेश सत्यापित करें।",14,285,{maxWidth:180});doc.save(filename);
+}
+function downloadRecordPDF(r){
+ const lines=[`Allowance Type: ${r.type||""}`,`Date: ${r.date||new Date().toLocaleString("en-IN")}`,`Details: ${r.details||""}`,`Total Payable: ${r.total||""}`];
+ if(r.type==="NDA")lines.push(`Basic Pay: ₹${r.basic}`,`DA Amount: ₹${r.da}`,`Night Duty Hours: ${r.hours}`,`NDA per Hour: ${money(r.hourly)}`);
+ if(r.type==="OTA")lines.push(`Post: ${r.post||"Custom"}`,`Basic Pay: ₹${r.basic}`,`TPA: ₹${r.tpa}`,`DA: ${r.daPercent}%`,`Total Hours: ${r.hours}`,`Hourly Rate: ${money(r.hourly)}`,`1.5x Hours: ${r.hours15x}`,`2.0x Hours: ${r.hours20x}`);
+ if(r.type==="KMA")lines.push(`Running Post: ${r.post||""}`,`Actual KM Run: ${r.actualKM}`,`Shunting Hours: ${r.shuntingHours}`,`Ghat Section: ${r.isGhat?"Yes":"No"}`,`Effective Total KM: ${r.effectiveKM}`,`Rate per 100 KM: ${money(r.ratePer100KM)}`);
+ makePDF(`${r.type||"Allowance"} Calculation Report`,lines,`${r.type||"Allowance"}_Report_${Date.now()}.pdf`);
+}
+function downloadHistoryPDF(){
+ const rows=getHistory();if(!rows.length){alert("पिछले 14 दिनों में कोई इतिहास उपलब्ध नहीं है।");return;}
+ const lines=[];rows.forEach((r,i)=>{lines.push(`${i+1}. ${r.type||"Allowance"} — ${r.total||""}`,`${r.date||""} · ${r.details||""}`,"");});
+ makePDF("Calculation History — Last 14 Days",lines,`Railway_Allowance_History_${Date.now()}.pdf`);
+}
+$("historyPdf").addEventListener("click",downloadHistoryPDF);
+$("clearHistory").addEventListener("click",()=>{if(confirm("क्या आप पूरा गणना इतिहास मिटाना चाहते हैं?")){localStorage.removeItem(HISTORY_KEY);renderHistory();}});
+document.querySelectorAll('[data-action="pdf"]').forEach(b=>b.addEventListener("click",()=>{showPage("historyPage");renderHistory();downloadHistoryPDF();}));
+renderHistory();
+if("serviceWorker"in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
 </script>
-</body>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAnalytics, isSupported, logEvent } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBa_wFexiyZM6BxcZ0TreH1_N5i85Kb2VY",
+  authDomain: "railway-allowance-analytics.firebaseapp.com",
+  projectId: "railway-allowance-analytics",
+  storageBucket: "railway-allowance-analytics.firebasestorage.app",
+  messagingSenderId: "192960468278",
+  appId: "1:192960468278:web:a90c38f135643e7710cf97",
+  measurementId: "G-8XDHQ01XBD"
+};
+
+const app = initializeApp(firebaseConfig);
+
+isSupported().then((supported) => {
+  if (supported) {
+    const analytics = getAnalytics(app);
+    logEvent(analytics, "app_open");
+    window.addEventListener("appinstalled", () => {
+      logEvent(analytics, "pwa_installed");
+    });
+  }
+}).catch(console.error);
+ let deferredInstallPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+});
+
+document.getElementById("installAppBtn").addEventListener("click", async () => {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+  } else {
+    alert("Chrome मेनू ⋮ खोलें और Add to Home screen या Install app चुनें।");
+  }
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  alert("ऐप सफलतापूर्वक इंस्टॉल हो गया!");
+});
+</script>
+ </body>
 </html>
